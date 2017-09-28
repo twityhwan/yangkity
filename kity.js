@@ -1,0 +1,194 @@
+var textObjMap = {}; // domId : textObj
+var isTextObj = function(id) {
+    return (id in textObjMap);
+}
+
+// TODO: Map에 있는지도 체크 ㅠㅠ
+// 1. 글자 생성 함수
+var kityCreateText = function(targetDIV, newID) {
+    if(!isValidId(targetDIV)) return null;
+    if(newID in textObjMap) {
+        console.log(newID + " alread exists!!");
+        return textObjMap[newID];
+    }
+
+    var div = document.getElementById(targetDIV);
+    var text = document.createElement('div');
+    text.id = newID;
+    text.style.display = "inline-block";
+    div.appendChild(text);
+
+    var textObj = {
+        contents: '',
+        color: 'black',
+        fontSize: 10,
+        top: 0,
+        left: 0,
+        opacity: 1,
+        rotation: 0,
+        motionFunc: {
+            rotation: {
+                angle: undefined, // number
+                goback: undefined, // boolean
+            },
+            scale: {
+                size: undefined, // number
+                goback: undefined, // boolean
+            },
+            opacity: {
+                opacity: undefined, // number 0~1
+                goback: undefined, // boolean
+            },
+            shaking: {
+                size: undefined,
+                goback: undefined, // boolean
+            },
+            line: {
+                direction: undefined,
+                length: undefined,
+                goback: undefined, // boolean
+            },
+            circle: {
+                angle: undefined,
+                radius: undefined,
+                goback: undefined, // boolean
+            }
+        }
+    };
+    textObjMap[newID] = textObj;
+}
+
+var kitySetText = function(target, options) {
+    if(!isValidId(target) || !isTextObj(target)) return;
+    var textObj = textObjMap[target];
+    for (var o in options) {
+        if (o in textObj) {
+            textObj[o] = options[o];
+        }
+    }
+
+    textEl = document.getElementById(target);
+    for (var o in options) {
+        switch(o) {
+        case "contents":
+            textEl.innerHTML = options.contents;
+            break;
+        case "color":
+            textEl.style.color = options.color;
+            break;
+        case "fontSize":
+            textEl.style.fontSize = options.fontSize;
+            break;
+        case "top":
+            textEl.style.top = options.top;
+            break;
+        case "left":
+            textEl.style.left = options.left;
+            break;
+        case "opacity": opacity;
+            textEl.style.opacity = options.opacity;
+            break;
+        case "rotation": rotation;
+            textEl.style.rotation = options.rotation;
+            break;
+        }
+    }
+}
+
+// 2. 기본 모션 함수
+// 2-1. 제자리 모션 함수
+var kityStaticRotation = function(target, options) {
+    // TODO: 현재 API는 Z축 회전만 지원함.
+    // {angle, goback}
+    if(!isValidId(target) || !isTextObj(target)) return;
+    var textObj = textObjMap[target];
+    for (var o in options) {
+        if (o in textObj.motionFunc.rotation) {
+            textObj.motionFunc.rotation[o] = options[o];
+        }
+    }
+    return {
+        id: target,
+        motionFunc: textObj.motionFunc.rotation
+    }
+}
+
+var kityStaticScale = function(target, options) {
+    // size, goback
+}
+
+var kityStaticOpacity = function(target, options) {
+    // opacity, goback
+}
+
+var kityStaticShaking = function(target, options) {
+    // size, goback ???
+}
+
+// 2-2. 직선모션 함수
+var kityLine = function(target, options) {
+    // direction, length
+}
+
+// 2-3. 곡선모션 함수
+var kityCircle = function(target, options) {
+    // angle, radius
+}
+// 2-4. 단순재생 함수
+var kitySinglePlay = function(playInfo, options) {
+    // {delay, duration, repeat}
+    // TODO: Animation
+    console.log(playInfo);
+    if (!playInfo) {
+        console.error("playInfo is wrong!! ", playInfo);
+        return;
+    }
+    if (!isValidId(playInfo.id) || !isTextObj(playInfo.id)) return;
+    var el = document.getElementById(playInfo.id);
+        /*
+    el.style.transform = "rotate("+playInfo.motionFunc.angle+"deg)";
+    el.style.transition-duration = options.duration/1000+'s';
+    el.style.transition-property = 'opacity';
+    el.style.transition-property = 'opacity';
+    */
+    var animation = new mojs.Html({
+        //el: '#mojs',
+        el: '#'+playInfo.id,
+        x: 200,
+        y: 200,
+        angleZ: { 0: playInfo.motionFunc.angle, duration: options.dration},
+    });
+
+    const timeline = new mojs.Timeline;
+    timeline.add(animation);
+    const player = new MojsPlayer({add: timeline});
+
+}
+
+// 3. 복합모션 함수
+// 3-1. 병렬모션 함수
+var kityPar = function(options) {
+    // {function, delay, duration, repeat}
+}
+// 3-2. 직렬모션 함수
+var kitySeq = function(options) {
+    // {function, delay, duration, repeat}
+}
+
+
+/*
+    kity = {
+        'kityCreateText': kityCreateText,
+        'kitySetText': kitySetText,
+        'kityStaticRotation': kityStaticRotation,
+        'kityStaticScale': kityStaticScale,
+        'kityStaticOpacity': kityStaticOpacity,
+        'kityStaticShaking': kityStaticShaking,
+        'kityLine': kityLine,
+        'kityCircle': kityCircle,
+        'kitySinglePlay': kitySinglePlay,
+        'kityPar': kityPar,
+        'kitySeq': kitySeq,
+
+    };
+    */
