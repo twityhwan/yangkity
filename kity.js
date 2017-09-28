@@ -101,67 +101,109 @@ var kityStaticRotation = function(target, options) {
     // TODO: 현재 API는 Z축 회전만 지원함.
     // {angle, goback}
     if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'rotation', options);
+    /*
     var textObj = textObjMap[target];
     for (var o in options) {
         if (o in textObj.motionFunc.rotation) {
             textObj.motionFunc.rotation[o] = options[o];
         }
     }
-    return {
-        id: target,
-        motionFunc: textObj.motionFunc.rotation
-    }
+    */
+    return target;
 }
 
 var kityStaticScale = function(target, options) {
     // size, goback
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'scale', options);
+    return target;
 }
 
 var kityStaticOpacity = function(target, options) {
     // opacity, goback
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'opacity', options);
+    return target;
 }
 
 var kityStaticShaking = function(target, options) {
     // size, goback ???
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'shaking', options);
+    return target;
 }
 
 // 2-2. 직선모션 함수
 var kityLine = function(target, options) {
+    console.log('kityLine()', target, options);
     // direction, length
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'line', options);
+    return target;
 }
 
 // 2-3. 곡선모션 함수
 var kityCircle = function(target, options) {
     // angle, radius
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'circle', options);
+    return target;
 }
 // 2-4. 단순재생 함수
-var kitySinglePlay = function(playInfo, options) {
+var kitySinglePlay = function(target, options) {
     // {delay, duration, repeat}
     // TODO: Animation
-    console.log(playInfo);
-    if (!playInfo) {
-        console.error("playInfo is wrong!! ", playInfo);
+    console.log(target);
+    if (!target) {
+        console.error("target is wrong!! ", target);
         return;
     }
-    if (!isValidId(playInfo.id) || !isTextObj(playInfo.id)) return;
-    var el = document.getElementById(playInfo.id);
+    if (!isValidId(target) || !isTextObj(target)) return;
+    var el = document.getElementById(target);
+    var textObj = textObjMap[target];
+    console.log(textObj);
         /*
     el.style.transform = "rotate("+playInfo.motionFunc.angle+"deg)";
     el.style.transition-duration = options.duration/1000+'s';
     el.style.transition-property = 'opacity';
     el.style.transition-property = 'opacity';
     */
+
     var animation = new mojs.Html({
         //el: '#mojs',
-        el: '#'+playInfo.id,
+        el: '#'+target,
         x: 200,
-        y: 200,
-        angleZ: { 0: playInfo.motionFunc.angle, duration: options.dration},
-    });
+        y: textObj.motionFunc.line.length ? {
+            200: 200-textObj.motionFunc.line.length,
+            duration: options.duration
+        } : 200,
+        angleZ: textObj.motionFunc.rotation.angle ? {
+            0: textObj.motionFunc.rotation.angle,
+            duration: options.duration
+        } : 0,
+        scale: textObj.motionFunc.scale.size ? {
+            1 : textObj.motionFunc.scale.size,
+            duration: options.duration
+        } : 1,
+        opacity: textObj.motionFunc.opacity.opacity ? {
+            1 : textObj.motionFunc.opacity.opacity,
+            duration: options.duration
+        } : 1,
+    }).replay();
+console.log(animation);
+/*
+    animation._o['angleZ'] = {};
+    animation._o['angleZ'][textObj.rotation] = textObj.motionFunc.rotation.angle;
+    animation._o['angleZ']['duration'] = options.duration;
+console.log(animation);
+*/
 
+/*
     const timeline = new mojs.Timeline;
     timeline.add(animation);
     const player = new MojsPlayer({add: timeline});
+    */
 
 }
 
