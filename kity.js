@@ -4,6 +4,9 @@ var isTextObj = function(id) {
 }
 
 // TODO: Map에 있는지도 체크 ㅠㅠ
+// TODO: 텍스트 position을 relative로 처리하도록..
+// 텍스트 div 생성할때마다 부모 div 하나 더 추가해서
+// 항상 0,0을 기준으로 그려질 수 있도록!!
 // 1. 글자 생성 함수
 var kityCreateText = function(targetDIV, newID) {
     if(!isValidId(targetDIV)) return null;
@@ -53,7 +56,8 @@ var kityCreateText = function(targetDIV, newID) {
                 radius: undefined,
                 goback: undefined, // boolean
             }
-        }
+        },
+        motion: undefined// last set motion
     };
     textObjMap[newID] = textObj;
 }
@@ -85,10 +89,10 @@ var kitySetText = function(target, options) {
         case "left":
             textEl.style.left = options.left;
             break;
-        case "opacity": opacity;
+        case "opacity":
             textEl.style.opacity = options.opacity;
             break;
-        case "rotation": rotation;
+        case "rotation":
             textEl.style.rotation = options.rotation;
             break;
         }
@@ -136,7 +140,6 @@ var kityStaticShaking = function(target, options) {
 
 // 2-2. 직선모션 함수
 var kityLine = function(target, options) {
-    console.log('kityLine()', target, options);
     // direction, length
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'line', options);
@@ -150,6 +153,7 @@ var kityCircle = function(target, options) {
     copyMotionOption(target, 'circle', options);
     return target;
 }
+
 // 2-4. 단순재생 함수
 var kitySinglePlay = function(target, options) {
     // {delay, duration, repeat}
@@ -162,6 +166,7 @@ var kitySinglePlay = function(target, options) {
     if (!isValidId(target) || !isTextObj(target)) return;
     var el = document.getElementById(target);
     var textObj = textObjMap[target];
+    var animation;
     console.log(textObj);
         /*
     el.style.transform = "rotate("+playInfo.motionFunc.angle+"deg)";
@@ -170,7 +175,23 @@ var kitySinglePlay = function(target, options) {
     el.style.transition-property = 'opacity';
     */
 
-    var animation = new mojs.Html({
+    var motion = textObj.motion;
+    var obj = {};
+    switch(motion) {
+        case 'line':
+            obj = getTransitionByDirection(textObj, options);
+            break;
+        default:
+            console.log("TODO!! "+motion);
+            break;
+    }
+    obj['el'] = '#'+target;
+
+    animation = new mojs.Html(obj).replay();
+    console.log(animation);
+    /*
+
+    animation = new mojs.Html({
         //el: '#mojs',
         el: '#'+target,
         x: 200,
@@ -191,7 +212,7 @@ var kitySinglePlay = function(target, options) {
             duration: options.duration
         } : 1,
     }).replay();
-console.log(animation);
+    */
 /*
     animation._o['angleZ'] = {};
     animation._o['angleZ'][textObj.rotation] = textObj.motionFunc.rotation.angle;

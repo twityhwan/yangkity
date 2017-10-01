@@ -24,6 +24,7 @@ var isValidId = function(id) {
 function copyMotionOption(id, propname, options) {
     console.log(options);
     var textObj = textObjMap[id];
+    textObj.motion = propname;
     for (var o in options) {
         if (o in textObj.motionFunc[propname]) {
             textObj.motionFunc[propname][o] = options[o];
@@ -32,24 +33,35 @@ function copyMotionOption(id, propname, options) {
     console.log('@@', textObj);
 }
 
-function getTransitionByDirection(obj, option) {
+function getTransitionByDirection(obj, options) {
+    // TODO: options.goback 처리하기
     var obj_ = {};
-    var type = typeof(obj.direction);
+    var motion = obj.motionFunc.line;
+    var type = typeof(motion.direction);
+
     if (type === 'number') { // degree
         // TODO
     } else if (type === 'string') {
-        switch(obj.direction) {
+        switch(motion.direction) {
         case 'top':
-            obj_[0] = option.length;
+            obj_['y'] = {};
+            obj_.y[obj.top] = obj.top-motion.length;
             break;
         case 'down':
+            obj_['y'] = {};
+            obj_.y[obj.top] = obj.top+motion.length;
             break;
         case 'left':
+            obj_['x'] = {};
+            obj_.x[obj.left] = obj.left-motion.length;
             break;
         case 'right':
+            obj_['x'] = {};
+            obj_.x[obj.left] = obj.left+motion.length;
             break;
         }
     }
+    console.log(JSON.stringify(obj_));
     return obj_;
 }
 
