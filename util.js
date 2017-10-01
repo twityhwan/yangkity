@@ -22,7 +22,6 @@ var isValidId = function(id) {
 }
 
 function copyMotionOption(id, propname, options) {
-    console.log(options);
     var textObj = textObjMap[id];
     textObj.motion = propname;
     for (var o in options) {
@@ -75,5 +74,32 @@ function getTransitionByDirection(obj, changedObj, options) {
             break;
         }
     }
+
+    return obj_;
+}
+
+function getTransitionByOpacity(obj, changedObj, options) {
+    var obj_ = {};
+    var motion = obj.motionFunc.opacity;
+
+    if (!changedObj) changedObj = obj;
+
+    obj_['opacity'] = {};
+    obj_.opacity[changedObj.opacity] = motion.opacity;
+    obj.opacity = motion.opacity;
+
+    return obj_;
+}
+
+function getTransitionByScale(obj, changedObj, options) {
+    var obj_ = {};
+    var motion = obj.motionFunc.scale;
+
+    if (!changedObj) changedObj = obj;
+
+    obj_['scale'] = {};
+    obj_.scale[changedObj.scale] = motion.size;
+    obj.scale = motion.size;
+
     return obj_;
 }

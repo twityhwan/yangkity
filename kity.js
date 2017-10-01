@@ -31,6 +31,7 @@ var kityCreateText = function(targetDIV, newID) {
         left: 0,
         opacity: 1,
         rotation: 0,
+        scale: 1,
         motionFunc: {
             rotation: {
                 angle: undefined, // number
@@ -169,6 +170,12 @@ var kitySinglePlay = function(jsonString, options) {
         case 'line':
             obj = getTransitionByDirection(textObj);
             break;
+        case 'opacity':
+            obj = getTransitionByOpacity(textObj);
+            break;
+        case 'scale':
+            obj = getTransitionByScale(textObj);
+            break;
         default:
             console.log("TODO!! "+motion);
             break;
@@ -246,6 +253,12 @@ var kitySeq = function() {
         switch(motion) {
             case 'line':
                 obj = getTransitionByDirection(textObj, updatedObjMap[target]);
+                break;
+            case 'opacity':
+                obj = getTransitionByOpacity(textObj, updatedObjMap[target]);
+                break;
+            case 'scale':
+                obj = getTransitionByScale(textObj);
                 break;
             default:
                 console.log("TODO!! "+motion);
