@@ -32,36 +32,46 @@ function copyMotionOption(id, propname, options) {
     }
 }
 
-function getTransitionByDirection(obj, options) {
-    // TODO: options.goback 처리하기
+function getTransitionByDirection(obj, changedObj, options) {
+    // TODO: options.goback 처리하기. yoyo 이용?
     var obj_ = {};
     var motion = obj.motionFunc.line;
     var type = typeof(motion.direction);
+
+    if (!changedObj) changedObj = obj;
 
     if (type === 'number') { // degree
         var radian = motion.direction * (Math.PI / 180);
         var radius = motion.length;
         obj_['x'] = {};
         obj_['y'] = {};
-        obj_.x[obj.left] = obj.left + (Math.cos(radian)*radius);
-        obj_.y[obj.top] = obj.top + (Math.sin(radian)*radius);
+        obj_.x[changedObj.left] = changedObj.left + (Math.cos(radian)*radius);
+        obj_.y[changedObj.top] = changedObj.top + (Math.sin(radian)*radius);
     } else if (type === 'string') {
         switch(motion.direction) {
         case 'top':
             obj_['y'] = {};
-            obj_.y[obj.top] = obj.top-motion.length;
+            obj_.y[changedObj.top] = changedObj.top-motion.length;
+            obj.top = changedObj.top-motion.length;
+            obj_['x'] = changedObj.left;
             break;
         case 'down':
             obj_['y'] = {};
-            obj_.y[obj.top] = obj.top+motion.length;
+            obj_.y[changedObj.top] = changedObj.top+motion.length;
+            obj_['x'] = changedObj.left;
+            obj.top = changedObj.top+motion.length;
             break;
         case 'left':
             obj_['x'] = {};
-            obj_.x[obj.left] = obj.left-motion.length;
+            obj_.x[changedObj.left] = changedObj.left-motion.length;
+            obj_['y'] = changedObj.top;
+            obj.left = changedObj.left-motion.length;
             break;
         case 'right':
             obj_['x'] = {};
-            obj_.x[obj.left] = obj.left+motion.length;
+            obj_.x[changedObj.left] = changedObj.left+motion.length;
+            obj_['y'] = changedObj.top;
+            obj.left = changedObj.left+motion.length;
             break;
         }
     }

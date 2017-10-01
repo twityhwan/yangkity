@@ -1,7 +1,9 @@
 var textObjMap = {}; // domId : textObj
+var updatedObjMap = {};
 var isTextObj = function(id) {
     return (id in textObjMap);
 }
+
 
 // TODO: Map에 있는지도 체크 ㅠㅠ
 // TODO: 텍스트 position을 relative로 처리하도록..
@@ -17,6 +19,7 @@ var kityCreateText = function(targetDIV, newID) {
     var text = document.createElement('div');
     text.id = newID;
     text.style.display = "inline-block";
+
     div.appendChild(text);
 
     var textObj = {
@@ -159,7 +162,6 @@ var kitySinglePlay = function(jsonString, options) {
     }
     if (!isValidId(target) || !isTextObj(target)) return;
     var animation;
-    console.log(textObj);
 
     var motion = textObj.motion;
     var obj = {};
@@ -178,7 +180,6 @@ var kitySinglePlay = function(jsonString, options) {
     }
 
     obj['el'] = '#'+target;
-    console.log(JSON.stringify(obj));
     animation = new mojs.Html(obj);
     animation.replay();
 
@@ -235,22 +236,22 @@ var kitySeq = function() {
     // {function, delay, duration, repeat}
     console.log('kitySeq');
     var aniMap = {};
+    var changedTextObj;
 
     for (var a in arguments) {
         var obj = {};
         var textObj = JSON.parse(arguments[a].function);
         var target = textObj.id;
-        console.log(textObj);
         var motion = textObj.motion;
         switch(motion) {
             case 'line':
-                obj = getTransitionByDirection(textObj);
-                console.log(JSON.stringify(obj));
+                obj = getTransitionByDirection(textObj, updatedObjMap[target]);
                 break;
             default:
                 console.log("TODO!! "+motion);
                 break;
         }
+        updatedObjMap[target] = textObj;
 
         for (var op in arguments[a]) {
             if (op === 'delay' || op === 'duration' || op === 'repeat')
@@ -265,7 +266,6 @@ var kitySeq = function() {
         }
     }
 
-    console.log(aniMap);
     for (var target in aniMap) {
         aniMap[target].replay();
     }
