@@ -5,8 +5,6 @@ var isTextObj = function(id) {
 
 // TODO: Map에 있는지도 체크 ㅠㅠ
 // TODO: 텍스트 position을 relative로 처리하도록..
-// 텍스트 div 생성할때마다 부모 div 하나 더 추가해서
-// 항상 0,0을 기준으로 그려질 수 있도록!!
 // 1. 글자 생성 함수
 var kityCreateText = function(targetDIV, newID) {
     if(!isValidId(targetDIV)) return null;
@@ -106,14 +104,6 @@ var kityStaticRotation = function(target, options) {
     // {angle, goback}
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'rotation', options);
-    /*
-    var textObj = textObjMap[target];
-    for (var o in options) {
-        if (o in textObj.motionFunc.rotation) {
-            textObj.motionFunc.rotation[o] = options[o];
-        }
-    }
-    */
     return target;
 }
 
@@ -132,6 +122,7 @@ var kityStaticOpacity = function(target, options) {
 }
 
 var kityStaticShaking = function(target, options) {
+    // TODO: 현재 API는 y값 (위아래) shaking만 지원.
     // size, goback ???
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'shaking', options);
@@ -158,7 +149,6 @@ var kityCircle = function(target, options) {
 var kitySinglePlay = function(target, options) {
     // {delay, duration, repeat}
     // TODO: Animation
-    console.log(target);
     if (!target) {
         console.error("target is wrong!! ", target);
         return;
@@ -179,16 +169,23 @@ var kitySinglePlay = function(target, options) {
     var obj = {};
     switch(motion) {
         case 'line':
-            obj = getTransitionByDirection(textObj, options);
+            obj = getTransitionByDirection(textObj);
             break;
         default:
             console.log("TODO!! "+motion);
             break;
     }
-    obj['el'] = '#'+target;
 
-    animation = new mojs.Html(obj).replay();
-    console.log(animation);
+    for (var op in options) {
+        if (op === 'duration' || op === 'repeat')
+            obj[op] = options[op];
+    }
+
+    obj['el'] = '#'+target;
+    animation = new mojs.Html(obj);
+    animation.replay();
+
+
     /*
 
     animation = new mojs.Html({

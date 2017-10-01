@@ -30,7 +30,6 @@ function copyMotionOption(id, propname, options) {
             textObj.motionFunc[propname][o] = options[o];
         }
     }
-    console.log('@@', textObj);
 }
 
 function getTransitionByDirection(obj, options) {
@@ -40,7 +39,12 @@ function getTransitionByDirection(obj, options) {
     var type = typeof(motion.direction);
 
     if (type === 'number') { // degree
-        // TODO
+        var radian = motion.direction * (Math.PI / 180);
+        var radius = motion.length;
+        obj_['x'] = {};
+        obj_['y'] = {};
+        obj_.x[obj.left] = obj.left + (Math.cos(radian)*radius);
+        obj_.y[obj.top] = obj.top + (Math.sin(radian)*radius);
     } else if (type === 'string') {
         switch(motion.direction) {
         case 'top':
@@ -61,24 +65,5 @@ function getTransitionByDirection(obj, options) {
             break;
         }
     }
-    console.log(JSON.stringify(obj_));
     return obj_;
-}
-
-function getRotationByAngle() {
-    var obj_ = {};
-    return obj_;
-}
-
-function getMojsHtml(id, options) {
-    if (!isValidId(target) || !isTextObj(target)) return null;
-    var textObj = textObjMap[id];
-    var mf = textObj.motionFunc;
-    return new mojs.Html({
-        el: '#'+id,
-        x: mf.line.direction ? getTransitionByDirection(mf.line, duration) : mf.left,
-        y: mf.line.direction ? getTransitionByDirection(mf.line, duration) : mf.top,
-        z: mf.line.direction ? getTransitionByDirection(mf.line, duration) : 0,
-        angleZ: mf.rotation.angle ? getTransitionByAngle(mf.rotation, duration) : mf.rotation,
-    });
 }
