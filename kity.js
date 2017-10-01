@@ -20,6 +20,7 @@ var kityCreateText = function(targetDIV, newID) {
     div.appendChild(text);
 
     var textObj = {
+        id: newID,
         contents: '',
         color: 'black',
         fontSize: 10,
@@ -104,21 +105,21 @@ var kityStaticRotation = function(target, options) {
     // {angle, goback}
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'rotation', options);
-    return target;
+    return JSON.stringify(textObjMap[target]);
 }
 
 var kityStaticScale = function(target, options) {
     // size, goback
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'scale', options);
-    return target;
+    return JSON.stringify(textObjMap[target]);
 }
 
 var kityStaticOpacity = function(target, options) {
     // opacity, goback
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'opacity', options);
-    return target;
+    return JSON.stringify(textObjMap[target]);
 }
 
 var kityStaticShaking = function(target, options) {
@@ -126,7 +127,7 @@ var kityStaticShaking = function(target, options) {
     // size, goback ???
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'shaking', options);
-    return target;
+    return JSON.stringify(textObjMap[target]);
 }
 
 // 2-2. 직선모션 함수
@@ -134,36 +135,31 @@ var kityLine = function(target, options) {
     // direction, length
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'line', options);
-    return target;
+    return JSON.stringify(textObjMap[target]);
 }
 
 // 2-3. 곡선모션 함수
 var kityCircle = function(target, options) {
+    // 포물선(베지어 곡선, 조절점), 곡선
     // angle, radius
     if(!isValidId(target) || !isTextObj(target)) return;
     copyMotionOption(target, 'circle', options);
-    return target;
+    return JSON.stringify(textObjMap[target]);
 }
 
 // 2-4. 단순재생 함수
-var kitySinglePlay = function(target, options) {
+var kitySinglePlay = function(jsonString, options) {
     // {delay, duration, repeat}
     // TODO: Animation
+    var textObj = JSON.parse(jsonString);
+    var target = textObj.id;
     if (!target) {
         console.error("target is wrong!! ", target);
         return;
     }
     if (!isValidId(target) || !isTextObj(target)) return;
-    var el = document.getElementById(target);
-    var textObj = textObjMap[target];
     var animation;
     console.log(textObj);
-        /*
-    el.style.transform = "rotate("+playInfo.motionFunc.angle+"deg)";
-    el.style.transition-duration = options.duration/1000+'s';
-    el.style.transition-property = 'opacity';
-    el.style.transition-property = 'opacity';
-    */
 
     var motion = textObj.motion;
     var obj = {};
@@ -177,11 +173,12 @@ var kitySinglePlay = function(target, options) {
     }
 
     for (var op in options) {
-        if (op === 'duration' || op === 'repeat')
+        if (op === 'delay' || op === 'duration' || op === 'repeat')
             obj[op] = options[op];
     }
 
     obj['el'] = '#'+target;
+    console.log(JSON.stringify(obj));
     animation = new mojs.Html(obj);
     animation.replay();
 
@@ -217,7 +214,7 @@ var kitySinglePlay = function(target, options) {
 console.log(animation);
 */
 
-/*
+    /*
     const timeline = new mojs.Timeline;
     timeline.add(animation);
     const player = new MojsPlayer({add: timeline});
@@ -231,8 +228,47 @@ var kityPar = function(options) {
     // {function, delay, duration, repeat}
 }
 // 3-2. 직렬모션 함수
-var kitySeq = function(options) {
+/*
+    options: Object (function, duration, delay, repeat)
+*/
+var kitySeq = function() {
     // {function, delay, duration, repeat}
+    console.log('kitySeq');
+    var aniMap = {};
+
+    for (var a in arguments) {
+        var obj = {};
+        var textObj = JSON.parse(arguments[a].function);
+        var target = textObj.id;
+        console.log(textObj);
+        var motion = textObj.motion;
+        switch(motion) {
+            case 'line':
+                obj = getTransitionByDirection(textObj);
+                console.log(JSON.stringify(obj));
+                break;
+            default:
+                console.log("TODO!! "+motion);
+                break;
+        }
+
+        for (var op in arguments[a]) {
+            if (op === 'delay' || op === 'duration' || op === 'repeat')
+                obj[op] = arguments[a][op];
+        }
+
+        if (target in aniMap) {
+            aniMap[target].then(obj);
+        } else {
+            obj['el'] = '#'+target;
+            aniMap[target] = new mojs.Html(obj);
+        }
+    }
+
+    console.log(aniMap);
+    for (var target in aniMap) {
+        aniMap[target].replay();
+    }
 }
 
 
