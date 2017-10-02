@@ -1,6 +1,6 @@
 /**
 * Creates text object.
-* 
+*
 * @method kityCreateTextObj
 * @param {String} text Text
 * @param {String} groupname Group name for identifying its original text
@@ -41,7 +41,7 @@ var kityCreateTextObj = function(text, groupName, splitType, targetDIV) {
 
 /**
 * Splits text by split type.
-* 
+*
 * @method kitySetText
 * @param {String} targetDIV Target element id
 * @param {Object} options Options
@@ -54,10 +54,10 @@ var splitText = function(text, groupName, splitType) {
 
 /**
 * Sets text attributes.
-* 
+*
 * @method kitySetText
 * @param {String} targetDIV Target element id
-* @param {Array} txtObjArr Array of text object 
+* @param {Array} txtObjArr Array of text object
 * @param {String} layout Arrange layout. layout := 'leftToRight'|'topToBottom'|'diagonal'|'point'|'userDef'
 */
 var kitySetTextObjArr = function(targetDIV, txtObjArr, layout) {
@@ -66,7 +66,7 @@ var kitySetTextObjArr = function(targetDIV, txtObjArr, layout) {
 
 /**
 * Executes motion animation by sequence.
-* 
+*
 * @method kitySetText
 * @param {String} targetDIV Target element id
 * @param {Array} textSet Array of text object id
