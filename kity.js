@@ -168,7 +168,7 @@ var kitySinglePlay = function(jsonString, options) {
     var animation;
 
     var motion = textObj.motion;
-    var obj = {};
+    var obj;
     switch(motion) {
         case 'line':
             obj = getTransitionByDirection(textObj);
@@ -187,27 +187,62 @@ var kitySinglePlay = function(jsonString, options) {
             break;
     }
 
-    for (var op in options) {
-        if (op === 'delay' || op === 'duration' || op === 'repeat')
-            obj[op] = options[op];
+    if (!Array.isArray(obj)) {
+        for (var op in options) {
+            if (op === 'delay' || op === 'duration' || op === 'repeat')
+                obj[op] = options[op];
+        }
+        obj['el'] = '#'+target;
+        animation = new mojs.Html(obj);
+        animation.replay();
     }
-
-    obj['el'] = '#'+target;
-    animation = new mojs.Html(obj);
-    animation.replay();
-
-    /*
-    const timeline = new mojs.Timeline;
-    timeline.add(animation);
-    const player = new MojsPlayer({add: timeline});
-    */
 
 }
 
 // 3. 복합모션 함수
 // 3-1. 병렬모션 함수
-var kityPar = function(options) {
+var kityPar = function() {
     // {function, delay, duration, repeat}
+    var aniMap = {};
+    const timeline = new mojs.Timeline;
+
+    console.log(arguments.length);
+    for (var a in arguments) {
+        var textObj = JSON.parse(arguments[a].function);
+        var target = textObj.id;
+        var motion = textObj.motion;
+        var obj = {};
+
+        switch(motion) {
+            case 'line':
+                // x, y
+            case 'opacity':
+                // opacity
+            case 'scale':
+                // scale
+            case 'rotation':
+                // angleZ
+                obj = getParalAnimationSpec(textObj, obj, arguments[a]);
+                break;
+            default:
+                console.log("TODO!! "+motion);
+                return;
+        }
+
+        if (!(target in aniMap)) {
+            aniMap[target] = obj;
+        } else {
+            extend(aniMap[target], obj);
+        }
+    }
+
+    for (var ani in aniMap) {
+        var obj = aniMap[ani];
+        obj['el'] = '#'+ani;
+        timeline.add(new mojs.Html(obj));
+    }
+    timeline.play();
+
 }
 // 3-2. 직렬모션 함수
 /*
