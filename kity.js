@@ -19,6 +19,7 @@ var kityCreateText = function(targetDIV, newID) {
     var text = document.createElement('div');
     text.id = newID;
     text.style.display = "inline-block";
+    text.style.position= "absolute";
 
     div.appendChild(text);
 
@@ -32,6 +33,8 @@ var kityCreateText = function(targetDIV, newID) {
         opacity: 1,
         rotation: 0,
         scale: 1,
+        currentTop: 0,
+        currentLeft: 0,
         motionFunc: {
             rotation: {
                 angle: undefined, // number
@@ -176,6 +179,9 @@ var kitySinglePlay = function(jsonString, options) {
         case 'scale':
             obj = getTransitionByScale(textObj);
             break;
+        case 'rotation':
+            obj = getTransitionByRotation(textObj);
+            break;
         default:
             console.log("TODO!! "+motion);
             break;
@@ -189,38 +195,6 @@ var kitySinglePlay = function(jsonString, options) {
     obj['el'] = '#'+target;
     animation = new mojs.Html(obj);
     animation.replay();
-
-
-    /*
-
-    animation = new mojs.Html({
-        //el: '#mojs',
-        el: '#'+target,
-        x: 200,
-        y: textObj.motionFunc.line.length ? {
-            200: 200-textObj.motionFunc.line.length,
-            duration: options.duration
-        } : 200,
-        angleZ: textObj.motionFunc.rotation.angle ? {
-            0: textObj.motionFunc.rotation.angle,
-            duration: options.duration
-        } : 0,
-        scale: textObj.motionFunc.scale.size ? {
-            1 : textObj.motionFunc.scale.size,
-            duration: options.duration
-        } : 1,
-        opacity: textObj.motionFunc.opacity.opacity ? {
-            1 : textObj.motionFunc.opacity.opacity,
-            duration: options.duration
-        } : 1,
-    }).replay();
-    */
-/*
-    animation._o['angleZ'] = {};
-    animation._o['angleZ'][textObj.rotation] = textObj.motionFunc.rotation.angle;
-    animation._o['angleZ']['duration'] = options.duration;
-console.log(animation);
-*/
 
     /*
     const timeline = new mojs.Timeline;
@@ -241,7 +215,6 @@ var kityPar = function(options) {
 */
 var kitySeq = function() {
     // {function, delay, duration, repeat}
-    console.log('kitySeq');
     var aniMap = {};
     var changedTextObj;
 
@@ -259,6 +232,9 @@ var kitySeq = function() {
                 break;
             case 'scale':
                 obj = getTransitionByScale(textObj);
+                break;
+            case 'rotation':
+                obj = getTransitionByRotation(textObj);
                 break;
             default:
                 console.log("TODO!! "+motion);

@@ -44,33 +44,33 @@ function getTransitionByDirection(obj, changedObj, options) {
         var radius = motion.length;
         obj_['x'] = {};
         obj_['y'] = {};
-        obj_.x[changedObj.left] = changedObj.left + (Math.cos(radian)*radius);
-        obj_.y[changedObj.top] = changedObj.top + (Math.sin(radian)*radius);
+        obj_.x[changedObj.currentLeft] = changedObj.currentLeft + (Math.cos(radian)*radius);
+        obj_.y[changedObj.currentTop] = changedObj.currentTop + (Math.sin(radian)*radius);
     } else if (type === 'string') {
         switch(motion.direction) {
         case 'top':
             obj_['y'] = {};
-            obj_.y[changedObj.top] = changedObj.top-motion.length;
-            obj.top = changedObj.top-motion.length;
-            obj_['x'] = changedObj.left;
+            obj_.y[changedObj.currentTop] = changedObj.currentTop-motion.length;
+            obj.currentTop = changedObj.currentTop-motion.length;
+            obj_['x'] = changedObj.currentLeft;
             break;
         case 'down':
             obj_['y'] = {};
-            obj_.y[changedObj.top] = changedObj.top+motion.length;
-            obj_['x'] = changedObj.left;
-            obj.top = changedObj.top+motion.length;
+            obj_.y[changedObj.currentTop] = changedObj.currentTop+motion.length;
+            obj_['x'] = changedObj.currentLeft;
+            obj.currentTop = changedObj.currentTop+motion.length;
             break;
         case 'left':
             obj_['x'] = {};
-            obj_.x[changedObj.left] = changedObj.left-motion.length;
-            obj_['y'] = changedObj.top;
-            obj.left = changedObj.left-motion.length;
+            obj_.x[changedObj.currentLeft] = changedObj.currentLeft-motion.length;
+            obj_['y'] = changedObj.currentTop;
+            obj.currentLeft = changedObj.currentLeft-motion.length;
             break;
         case 'right':
             obj_['x'] = {};
-            obj_.x[changedObj.left] = changedObj.left+motion.length;
-            obj_['y'] = changedObj.top;
-            obj.left = changedObj.left+motion.length;
+            obj_.x[changedObj.currentLeft] = changedObj.currentLeft+motion.length;
+            obj_['y'] = changedObj.currentTop;
+            obj.currentLeft = changedObj.currentLeft+motion.length;
             break;
         }
     }
@@ -100,6 +100,20 @@ function getTransitionByScale(obj, changedObj, options) {
     obj_['scale'] = {};
     obj_.scale[changedObj.scale] = motion.size;
     obj.scale = motion.size;
+
+    return obj_;
+}
+
+function getTransitionByRotation(obj, changedObj, options) {
+    var obj_ = {};
+    var motion = obj.motionFunc.rotation;
+
+    if (!changedObj) changedObj = obj;
+
+    // TODO : x, y, z 축에 대한 모든 rotation 처리
+    obj_['angleZ'] = {};
+    obj_.angleZ[changedObj.rotation] = motion.angle;
+    obj.rotation = motion.angle;
 
     return obj_;
 }
