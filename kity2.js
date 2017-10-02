@@ -73,6 +73,6 @@ var kitySetTextObjArr = function(targetDIV, txtObjArr, layout) {
 * @param {String} function Default motion function
 * @param {Array} timeSet Array of delay time
 */
-var kityExeMotionSeq = function(targetDIV, textSet, function, timeSet) {
+var kityExeMotionSeq = function(targetDIV, textSet, func, timeSet) {
 
 }
