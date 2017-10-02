@@ -6,7 +6,7 @@ window.onload = function() {
     var txtObj = kityCreateTextObj(content, 'group', 'char', targetDIV);
 
     // 객체 속성 설정
-    kitySetTextObjAttr(targetDIV, txtObj, 'diagonal');
+    kitySetTextAttr(targetDIV, txtObj, 'diagonal');
 
     // 텍스트 set 지정 및 시간 set 지정
     var txtSet = new Array();

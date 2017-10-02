@@ -1,3 +1,21 @@
+function createElement(targetId, id) {
+    if (!document.getElementById(targetId)) {
+        console.error('Wrong target id: '+targetId);
+        return;
+    }
+    if (document.getElementById(id)) {
+        console.error('Element id('+id+') already exists!!');
+        return;
+    }
+    var div = document.getElementById(targetId);
+    var el = document.createElement('div');
+    el.id = id;
+    el.style.display = "inline-block";
+    el.style.position= "absolute";
+    div.appendChild(el);
+    return el;
+}
+
 function clone(obj) {
     if (obj === null || typeof(obj) !== 'object')
         return obj;
