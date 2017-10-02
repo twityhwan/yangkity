@@ -60,7 +60,7 @@ var splitText = function(text, groupName, splitType) {
 * @param {Array} txtObjArr Array of text object
 * @param {String} layout Arrange layout. layout := 'leftToRight'|'topToBottom'|'diagonal'|'point'|'userDef'
 */
-var kitySetTextObjArr = function(targetDIV, txtObjArr, layout) {
+var kitySetTextObjAttr = function(targetDIV, txtObjArr, layout) {
 
 }
 
