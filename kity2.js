@@ -11,7 +11,7 @@
 var kityCreateTextObj = function(text, groupName, splitType, targetDIV) {
     var txtObjArr = [];
 
-    createElement(targetDIV, groupName);
+    //var el = createElement(targetDIV, groupName);
 
     // content 분리
     var textArr = splitText(text, groupName, splitType);
@@ -80,7 +80,53 @@ var splitText = function(text, groupName, splitType) {
 var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
     // 첫번째 객체의 initX, initY에 따라 이후 객체들의 값이 자동으로 셋팅됨.
     // TODO: X, Y 좌표 매칭
-    // TODO: 폰트 정보 매칭
+
+    if (!options || typeof options != 'object') {
+        options = {};
+    }
+
+    // layout
+    switch(layout) {
+        case 'leftToRight':
+            options.position = 'static';
+            break;
+        case 'topToBottom':
+        case 'diagonal':
+        case 'point':
+            options.position = 'absolute';
+            break;
+        case 'userDef':
+            // TODO
+            break;
+    }
+
+    for (var i=0; i<txtObjs.length; i++) {
+        var info = txtObjs[i].textObjInfo;
+        var id = info.GroupName+'_'+info.textType+'_'+info.ID;
+        var el = createElement(targetDIV, id, info.Content);
+
+        switch(layout) {
+            case 'leftToRight':
+            case 'point':
+                // nothing to do
+                break;
+            case 'topToBottom':
+                options.top = i*options.fontsize;
+                break;
+            case 'diagonal':
+                options.top = i*options.fontsize;
+                options.left = i*options.fontsize;
+                break;
+            case 'userDef':
+                // TODO
+                break;
+        }
+
+        // CSS 스타일 적용
+        if (Object.keys(options).length > 0) {
+            setStyle(id, options);
+        }
+    }
 }
 
 /**

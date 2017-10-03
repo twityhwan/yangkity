@@ -1,4 +1,4 @@
-function createElement(targetId, id) {
+function createElement(targetId, id, text) {
     if (!document.getElementById(targetId)) {
         console.error('Wrong target id: '+targetId);
         return;
@@ -11,7 +11,7 @@ function createElement(targetId, id) {
     var el = document.createElement('div');
     el.id = id;
     el.style.display = "inline-block";
-    el.style.position= "absolute";
+    el.innerHTML = text;
     div.appendChild(el);
     return el;
 }
@@ -194,4 +194,45 @@ function getParalAnimationSpec(textObj, obj, args) {
             break;
     }
     return obj_;
+}
+
+var setStyle = function(target, options) {
+    if(!isValidId(target)) return;
+    textEl = document.getElementById(target);
+    for (var o in options) {
+        switch(o) {
+        case "contents":
+            textEl.innerHTML = options.contents;
+            break;
+        case "font":
+            textEl.style.fontFamily = options.font;
+            break;
+        case "fontcolor":
+            textEl.style.color = options.fontcolor;
+            break;
+        case "fontsize":
+            textEl.style.fontSize = options.fontsize;
+            break;
+        case "top":
+            textEl.style.top = options.top;
+            break;
+        case "left":
+            textEl.style.left = options.left;
+            break;
+        case "fontOpacity":
+            textEl.style.opacity = options.opacity;
+            break;
+        case "initX":
+            textEl.style.initX = options.initX;
+            break;
+        case "initY":
+            textEl.style.initY = options.initY;
+            break;
+        case "rotation":
+            textEl.style.rotation = options.rotation;
+        case "position":
+            textEl.style.position = options.position;
+            break;
+        }
+    }
 }
