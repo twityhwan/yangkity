@@ -100,6 +100,8 @@ var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
             break;
     }
 
+    var top_ = options.top ? options.top : 0;
+    var left_ = options.left ? options.left : 0;
     for (var i=0; i<txtObjs.length; i++) {
         var info = txtObjs[i].textObjInfo;
         var id = info.GroupName+'_'+info.textType+'_'+info.ID;
@@ -111,11 +113,11 @@ var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
                 // nothing to do
                 break;
             case 'topToBottom':
-                options.top = i*options.fontsize;
+                options.top = top_ + i*options.fontsize;
                 break;
             case 'diagonal':
-                options.top = i*options.fontsize;
-                options.left = i*options.fontsize;
+                options.top = top_ + i*options.fontsize;
+                options.left = left_ + i*options.fontsize;
                 break;
             case 'userDef':
                 // TODO
@@ -135,9 +137,9 @@ var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
 * @method kitySetText
 * @param {String} targetDIV Target element id
 * @param {Array} textSet Array of text object id
-* @param {String} function Default motion function
+* @param {String} motionFunc Default motion function
 * @param {Array} timeSet Array of delay time
 */
-var kityExeMotionSeq = function(targetDIV, textSet, func, timeSet) {
+var kityExeMotionSeq = function(targetDIV, textSet, motionFunc, timeSet) {
 
 }
