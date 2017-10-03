@@ -3,6 +3,7 @@ window.onload = function() {
     console.log(textObjs);
 
     var player = KITY.getPlayer();
+    var container = KITY.createContainer('container');
     for (var i=0; i<textObjs.length; i++) {
         var spec = {
             y: {100: 200, delay: i, duration: 2, repeat: 1},
@@ -10,8 +11,10 @@ window.onload = function() {
         }
         KITY.setAnimationSpec(textObjs[i], spec);
         console.log(textObjs[i]);
-        var animation = KITY.createAnimation(textObjs[i]);
-        player.add(animation);
+        //var animation = KITY.createAnimation(textObjs[i]);
+        //player.add(animation);
+        container.add(textObjs[i]);
     }
-    player.play({mode: 'sequence'});
+    var animation = KITY.createAnimation(container);
+    //player.play({mode: 'sequence'});
 }

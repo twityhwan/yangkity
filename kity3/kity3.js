@@ -47,6 +47,8 @@ KITY.createText = function(text, targetId, id, type, style) {
     for (var i=0; i<textArr.length; i++) {
         var elId = id+'_'+type+'_'+i;
         var textObj = {
+            id: elId,
+            parentId: targetId,
             type: type, // 'line', 'word', 'char'
             groupId: id, // 하나의 문장에서 파생됨
             index: i, // line, word, char
@@ -130,9 +132,11 @@ KITY.setAnimationSpec = function(textObj, spec) {
  * Contains text objects and another container.
  *
  * @method createContainer
+ * @param id {String} Element id
  * @return {Object} Container object
  */
-KITY.createContainer = function() {
+KITY.createContainer = function(id) {
+    return new Container(id);
 }
 
 /**
@@ -144,6 +148,7 @@ KITY.createContainer = function() {
  */
 KITY.createAnimation = function(object) {
     // TODO: then 처리
+    // TODO: container 처리
     return new mojs.Html(object.spec);
 }
 
