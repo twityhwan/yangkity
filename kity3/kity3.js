@@ -166,6 +166,7 @@ KITY.createTimeline = function() {
  * @return {Object} Player object
  */
 KITY.getPlayer = function() {
+    return Player;
 }
 
 })();
