@@ -1,7 +1,7 @@
 /**
  * Animation module for kinetic typography.
  *
- * @class Animation 
+ * @class Animation
  */
 var Animation;
 (function() {
