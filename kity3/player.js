@@ -1,7 +1,7 @@
 /**
  * Player module for kinetic typography.
  *
- * @class Player 
+ * @class Player
  */
 var Player;
 (function() {
@@ -10,7 +10,7 @@ Player = {};
 /**
  * Sets timeline to player.
  *
- * @method set 
+ * @method set
  * @return {Object} Timeline object
  */
 Player.set = function(timeline) {
@@ -19,17 +19,18 @@ Player.set = function(timeline) {
 /**
  * Plays animation in timeline.
  *
- * @method play 
+ * @method play
  * @param {Object} options Options
  * @return {Object} Timeline object
  */
 Player.play = function(options) {
+// TODO: 재생 방식 sequence, parallel, single
 }
 
 /**
  * Plays animation in timeline.
  *
- * @method play 
+ * @method play
  * @return {Object} Timeline object
  */
 Player.stop = function() {
@@ -38,7 +39,7 @@ Player.stop = function() {
 /**
  * Resumes animation in timeline.
  *
- * @method resume 
+ * @method resume
  * @return {Object} Timeline object
  */
 Player.resume = function() {
