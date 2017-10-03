@@ -138,8 +138,18 @@ var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
 * @param {String} targetDIV Target element id
 * @param {Array} textSet Array of text object id
 * @param {String} motionFunc Default motion function
-* @param {Array} timeSet Array of delay time
+* @param {Array} timeSet Array of start(delay) time
 */
 var kityExeMotionSeq = function(targetDIV, textSet, motionFunc, timeSet) {
+    // TODO list
+    // 1. textSet의 인덱스로 animation 순서가 정해짐.
+    // 2. StartTimeSet이랑 매칭하여 애니메이션 생성.
+    // 3. 모션 실행.
+    /*
+    for (var i=0; i<textSet.length; i++) {
+        // TODO error handling
+        eval(motionFunc);
+    }
+    */
 
 }
