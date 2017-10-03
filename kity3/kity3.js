@@ -33,11 +33,64 @@ KITY = {};
  * @param style {Object} Style attributes
  * <pre>
  *      type := 'line' | 'word' | 'char'
+ *      style.layout := 'leftToRight' | 'topToBottom' | 'diagonal' | 'point' | 'userDef'
  * </pre>
  * @return {Array} Array of text objects
  */
 KITY.createText = function(text, targetId, id, type, style) {
+    var txtObjArr = [];
+
+    // content 분리
+    var textArr = splitText(text, type);
+
+    // 텍스트 객체 생성
+    for (var i=0; i<textArr.length; i++) {
+        var elId = id+'_'+type+'_'+i;
+        var textObj = {
+            type: type, // 'line', 'word', 'char'
+            groupId: id, // 하나의 문장에서 파생됨
+            index: i, // line, word, char
+            text: textArr[i],
+            style: { // text Style 정보
+            },
+            spec: {
+                el: '#'+elId
+            }
+        }
+        createElement(targetId, elId, textArr[i]);
+        txtObjArr.push(textObj);
+    }
+    // TODO: style
+    return txtObjArr;
 }
+
+/**
+* Splits text by split type.
+*
+* @method splitText
+* @param {String} text Text
+* @return {String} splitType Split type
+* @private
+*/
+var splitText = function(text, splitType) {
+    var textArr = [];
+    switch(splitType) {
+        case 'line':
+            textArr.push(text);
+            break;
+        case 'word':
+            textArr = text.split(" ");
+            break;
+        case 'char':
+            textArr = text.replace(" ", "").split("");
+            break;
+        default:
+            console.error("Not Supported Type: "+splitType);
+            break;
+    }
+    return textArr;
+}
+
 
 /**
  * Sets style for object having id.
@@ -59,6 +112,18 @@ KITY.setStyle = function(textObj, style) {
  * @return {Object} Text object
  */
 KITY.setAnimationSpec = function(textObj, spec) {
+    // TODO: spec valid check
+
+    for (var o in spec) {
+        for(var o2 in spec[o]) {
+            if (o2 === 'delay' || o2 === 'duration') {
+                spec[o][o2] *= 1000;
+            }
+        }
+    }
+
+    extend(textObj.spec, spec);
+    return textObj;
 }
 
 /**
@@ -78,6 +143,8 @@ KITY.createContainer = function() {
  * @return {Object} Animation object
  */
 KITY.createAnimation = function(object) {
+    // TODO: then 처리
+    return new mojs.Html(object.spec);
 }
 
 /**
@@ -88,6 +155,8 @@ KITY.createAnimation = function(object) {
  * @return {Object} Timeline object
  */
 KITY.createTimeline = function() {
+    const timeline = new mojs.Timeline;
+    return timeline;
 }
 
 /**
