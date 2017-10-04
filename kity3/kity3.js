@@ -60,9 +60,14 @@ KITY.createText = function(text, targetId, id, type, style) {
             }
         }
         createElement(targetId, elId, textArr[i]);
+        if (style) {
+            KITY.setStyle(textObj, style);
+        }
         txtObjArr.push(textObj);
     }
-    // TODO: style
+    
+
+
     return txtObjArr;
 }
 
@@ -103,6 +108,11 @@ var splitText = function(text, splitType) {
  * @return {Object} Text object
  */
 KITY.setStyle = function(textObj, style) {
+
+    var el = document.getElementById(textObj.id);
+    for (var o in style) {
+        el.style[o] = style[o];
+    }
 }
 
 /**
