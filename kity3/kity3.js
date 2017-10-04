@@ -113,6 +113,7 @@ KITY.setStyle = function(textObj, style) {
     for (var o in style) {
         el.style[o] = style[o];
     }
+    extend(textObj.style, style);
 }
 
 /**
