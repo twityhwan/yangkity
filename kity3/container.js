@@ -5,12 +5,14 @@
  * @param id {String} Element id
  */
 
+ // TODO: addById(), removeById()
 function Container(id) {
 
     this.el = document.createElement('div');
     this.el.id = id;
     this.el.style = display = "inline-block";
     this.spec = { el: '#'+id};
+    this.children = {};
     document.body.appendChild(this.el);
     
     /**
@@ -19,7 +21,11 @@ function Container(id) {
      * @method add 
      */
     this.add = function(textObj) {
-        console.log("add", textObj.id);
+        var parentEl = document.getElementById(textObj.parentId);
+        var childEl = document.getElementById(textObj.id);
+        parentEl.removeChild(childEl);
+        this.el.appendChild(childEl);
+        this.children[textObj.id] = textObj;
     }
 
     /**
@@ -29,7 +35,11 @@ function Container(id) {
      * @param textObj {Object} Text object
      */
     this.remove = function(textObj) {
-        
+        var childEl = document.getElementById(textObj.id);
+        var originParentEl = document.getElementById(textObj.parentId);
+        this.el.removeChild(childEl);
+        originParentEl.appendChild(childEl);
+        delete this.children[textObj.id];
     }
 
     /**
