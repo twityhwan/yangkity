@@ -1,6 +1,5 @@
 window.onload = function() {
     var textObjs = KITY.createText("헬로 키네틱", "parent", "hello", "char");
-    console.log(textObjs);
 
     var player = KITY.getPlayer();
     var container = KITY.createContainer('container');
@@ -10,11 +9,17 @@ window.onload = function() {
             opacity: {1: 0.5, delay: i, duration: 1, repeat: 1},
         }
         KITY.setAnimationSpec(textObjs[i], spec);
-        console.log(textObjs[i]);
-        //var animation = KITY.createAnimation(textObjs[i]);
-        //player.add(animation);
+        var animation = KITY.createAnimation(textObjs[i]);
+        player.add(animation);
         container.add(textObjs[i]);
     }
+    var spec = {
+        angleZ: {0: 360, delay: 0, duration: 4, repeat: 0},
+        x: 200,
+        y: 300,
+    }
+    KITY.setAnimationSpec(container, spec);
     var animation = KITY.createAnimation(container);
-    //player.play({mode: 'sequence'});
+    player.add(animation);
+    player.play({mode: 'parallel'});
 }

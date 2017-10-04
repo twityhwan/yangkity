@@ -9,11 +9,11 @@
 function Container(id) {
 
     this.el = document.createElement('div');
-    this.el.id = id;
-    this.el.style = display = "inline-block";
+    this.el.style.display = "inline-block";
+    document.body.appendChild(this.el);
+    this.id = this.el.id = id;
     this.spec = { el: '#'+id};
     this.children = {};
-    document.body.appendChild(this.el);
     
     /**
      * Adds text object to container.
@@ -48,5 +48,13 @@ function Container(id) {
      * @method claerAll
      */
     this.clearAll = function() {
+        for (var o in this.children) {
+            var textObj = children[o];
+            var childEl = document.getElementById(textObj.id);
+            var originParentEl = document.getElementById(textObj.parentId);
+            this.el.removeChild(childEl);
+            originParentEl.appendChild(childEl);
+        }
+        this.children = {};
     }
 }

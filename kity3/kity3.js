@@ -148,7 +148,6 @@ KITY.createContainer = function(id) {
  */
 KITY.createAnimation = function(object) {
     // TODO: then 처리
-    // TODO: container 처리
     return new mojs.Html(object.spec);
 }
 
