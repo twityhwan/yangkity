@@ -140,6 +140,23 @@ KITY.setAnimationSpec = function(textObj, spec) {
 }
 
 /**
+ * Clears all the animation specifications from text object.
+ *
+ * @method createAnimation
+ * @param object {Object} Text object or Container object
+ */
+KITY.clearAnimationSpec = function(object) {
+    if (!object) {
+        console.error("Wrong object ", object);
+        return;
+    }
+
+    if ('spec' in object) {
+        object.spec = {el: '#'+object.id};
+    }
+}
+
+/**
  * Contains text objects and another container.
  *
  * @method createContainer
