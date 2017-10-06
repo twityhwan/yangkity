@@ -22,7 +22,7 @@ var objectMap = {};
 * Target object should be in the internal objectMap.
 *
 * @method isValidObject
-* @param targetOj {Object} Target object
+* @param targetObj {Object} Target object
 * @return {Boolean} If target obejct is valid, returns `true`. Otherwise, returns `false`.
 * @private
 */
@@ -133,7 +133,7 @@ var splitText = function(text, splitType) {
  * @method setStyle
  * @param targetObj {Object} Target object
  * @param style {Object} Style attributes
- * @return {Object} Text object
+ * @return {Object} Target object
  */
 KITY.setStyle = function(targetObj, style) {
     if (!isValidObject(targetObj)) {
@@ -145,6 +145,7 @@ KITY.setStyle = function(targetObj, style) {
         el.style[o] = style[o];
     }
     extend(targetObj.style, style);
+    return targetObj;
 }
 
 /**
@@ -160,7 +161,7 @@ KITY.setStyleById = function(id, style) {
         return;
     }
 
-    KITY.setStyle(objectMap[id], style);
+    return KITY.setStyle(objectMap[id], style);
 }
 
 /**
@@ -199,7 +200,7 @@ KITY.setAnimationSpec = function(targetObj, spec) {
  * @method setAnimationSpecById
  * @param id {String} Id of target object
  * @param spec {Object} Animation specification
- * @return {Object} Text object
+ * @return {Object} Target object
  */
 KITY.setAnimationSpecById = function(id, spec) {
     // TODO: spec valid check
@@ -215,6 +216,7 @@ KITY.setAnimationSpecById = function(id, spec) {
  *
  * @method createAnimationSpec
  * @param targetObj {Object} Target object
+ * @return {Object} Target object
  */
 KITY.clearAnimationSpec = function(targetObj) {
     if (!isValidObject(targetObj)) {
@@ -224,6 +226,7 @@ KITY.clearAnimationSpec = function(targetObj) {
     if ('spec' in targetObj) {
         targetObj.spec = {el: '#'+targetObj.id};
     }
+    return targetObj;
 }
 
 /**
@@ -231,13 +234,14 @@ KITY.clearAnimationSpec = function(targetObj) {
  *
  * @method createAnimationSpecById
  * @param id {String} Id of target object
+ * @return {Object} Target object
  */
 KITY.clearAnimationSpecById = function(id) {
     if (!isValidId(id)) {
         return;
     }
 
-    KITY.clearAnimationSpec(objectMap[id]);
+    return KITY.clearAnimationSpec(objectMap[id]);
 }
 
 /**
