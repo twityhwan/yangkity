@@ -11,21 +11,13 @@
  */
 
 function Text(text, id, parentId, type, groupId, index) {
-    this.textObj = {
-        id: id,
-        parentId: parentId,
-        type: type, // 'line', 'word', 'char'
-        groupId: groupId, // 하나의 문장에서 파생됨
-        index: index, // line, word, char
-        text: text,
-        style: { // text Style 정보
-        },
-        spec: {
-            el: '#'+id
-        }
-    }
-
+    this.id = id;
+    this.parentId = parentId;
+    this.type = type; // 'line', 'word', 'char'
+    this.groupId = groupId;
+    this.index = index;
+    this.text = text;
+    this.style = {};
+    this.spec = {el: '#'+id};
     createElement(parentId, id, text);
-
-    return this.textObj;
 }

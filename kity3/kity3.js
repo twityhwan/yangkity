@@ -15,7 +15,49 @@ var KITY;
 
 (function() {
 KITY = {};
-var textObjMap = {};
+var objectMap = {};
+
+/**
+* Checks if target object is valid.
+* Target object should be in the internal objectMap.
+*
+* @method isValidObject
+* @param targetOj {Object} Target object
+* @return {Boolean} If target obejct is valid, returns `true`. Otherwise, returns `false`.
+* @private
+*/
+var isValidObject = function(targetObj) {
+    if (typeof targetObj !== 'object') {
+        console.error("Wrong parameter type ", targetObj);
+        return false;
+    }
+
+    if (objectMap[targetObj.id]) return true;
+
+    console.error("Invalid object ", targetObj);
+    return false;
+}
+
+/**
+* Checks if target object id is valid.
+* Target object should be in the internal objectMap.
+*
+* @method isValidId
+* @param id {Object} Id of target object
+* @return {Boolean} If target obejct is valid, returns `true`. Otherwise, returns `false`.
+* @private
+*/
+var isValidId = function(id) {
+    if (typeof id !== 'string') {
+        console.error("Wrong parameter type", id);
+        return false;
+    }
+
+    if (objectMap[id]) return true;
+
+    console.error("Invalid object id", id);
+    return false;
+}
 
 /**
  * Creates text object.
@@ -52,7 +94,7 @@ KITY.createText = function(text, targetId, id, type, style) {
             KITY.setStyle(textObj, style);
         }
         txtObjArr.push(textObj);
-        textObjMap[elId] = textObj;
+        objectMap[elId] = textObj;
     }
     
     return txtObjArr;
@@ -85,41 +127,54 @@ var splitText = function(text, splitType) {
     return textArr;
 }
 
-
 /**
  * Sets style for text object.
  *
  * @method setStyle
- * @param textObj {String|Object} Text object or element id
+ * @param targetObj {Object} Target object
  * @param style {Object} Style attributes
  * @return {Object} Text object
  */
-KITY.setStyle = function(textObj, style) {
-    // TODO: id string으로 받았을 때 처리(textObj, container)
-    if (typeof textObj === 'string') {
-        textObj = textObjMap[textObj];
+KITY.setStyle = function(targetObj, style) {
+    if (!isValidObject(targetObj)) {
+        return;
     }
 
-    var el = document.getElementById(textObj.id);
+    var el = document.getElementById(targetObj.id);
     for (var o in style) {
         el.style[o] = style[o];
     }
-    extend(textObj.style, style);
+    extend(targetObj.style, style);
+}
+
+/**
+ * Sets style for text object by id.
+ *
+ * @method setStyleById
+ * @param id {String} Element id of target object
+ * @param style {Object} Style attributes
+ * @return {Object} Target object
+ */
+KITY.setStyleById = function(id, style) {
+    if (!isValidId(id)) {
+        return;
+    }
+
+    KITY.setStyle(objectMap[id], style);
 }
 
 /**
  * Sets animation spec for object.
  *
  * @method setAnimationSpec
- * @param textObj {String|Object} Text object or element id
+ * @param targetObj {Object} Target object
  * @param spec {Object} Animation specification
  * @return {Object} Text object
  */
-KITY.setAnimationSpec = function(textObj, spec) {
+KITY.setAnimationSpec = function(targetObj, spec) {
     // TODO: spec valid check
-    // TODO: id string으로 받았을 때 처리(textObj, container)
-    if (typeof textObj === 'string') {
-        textObj = textObjMap[textObj];
+    if (!isValidObject(targetObj)) {
+        return;
     }
 
     if ('getSpec' in spec) {
@@ -134,26 +189,55 @@ KITY.setAnimationSpec = function(textObj, spec) {
         }
     }
     
-    extend(textObj.spec, spec);
-    return textObj;
+    extend(targetObj.spec, spec);
+    return targetObj;
 }
 
 /**
- * Clears all the animation specifications from text object.
+ * Sets animation spec for object by id.
  *
- * @method createAnimationSpec
- * @param object {Object} Text object or Container object
+ * @method setAnimationSpecById
+ * @param id {String} Id of target object
+ * @param spec {Object} Animation specification
+ * @return {Object} Text object
  */
-KITY.clearAnimationSpec = function(object) {
-    // TODO: id string으로 받았을 때 처리(textObj, container)
-    if (!object) {
-        console.error("Wrong object ", object);
+KITY.setAnimationSpecById = function(id, spec) {
+    // TODO: spec valid check
+    if (!isValidId(id)) {
         return;
     }
 
-    if ('spec' in object) {
-        object.spec = {el: '#'+object.id};
+    return KITY.setAnimationSpec(objectMap[id], spec);
+}
+
+/**
+ * Clears all the animation specifications from target object.
+ *
+ * @method createAnimationSpec
+ * @param targetObj {Object} Target object
+ */
+KITY.clearAnimationSpec = function(targetObj) {
+    if (!isValidObject(targetObj)) {
+        return;
     }
+
+    if ('spec' in targetObj) {
+        targetObj.spec = {el: '#'+targetObj.id};
+    }
+}
+
+/**
+ * Clears all the animation specifications from target object by id.
+ *
+ * @method createAnimationSpecById
+ * @param id {String} Id of target object
+ */
+KITY.clearAnimationSpecById = function(id) {
+    if (!isValidId(id)) {
+        return;
+    }
+
+    KITY.clearAnimationSpec(objectMap[id]);
 }
 
 /**
@@ -164,20 +248,39 @@ KITY.clearAnimationSpec = function(object) {
  * @return {Object} Container object
  */
 KITY.createContainer = function(id) {
-    return new Container(id);
+    var container = new Container(id);
+    objectMap[id] = container;
+    return container;
 }
 
 /**
  * Creates animation object.
  *
  * @method createAnimation
- * @param {Object} object Text object or Container object
+ * @param targetObj {Object} Target object
  * @return {Object} Animation object
  */
-KITY.createAnimation = function(object) {
+KITY.createAnimation = function(targetObj) {
     // TODO: then 처리
-    // TODO: id string으로 받았을 때 처리(textObj, container)
-    return new mojs.Html(object.spec);
+    if (!isValidObject(targetObj)) {
+        return;
+    }
+    return new mojs.Html(targetObj.spec);
+}
+
+/**
+ * Creates animation object by id.
+ *
+ * @method createAnimationById
+ * @param id {String} Id of target object
+ * @return {Object} Animation object
+ */
+KITY.createAnimationById = function(id) {
+    // TODO: then 처리
+    if (!isValidId(id)) {
+        return;
+    }
+    KITY.createAnimation(objectMap[id]);
 }
 
 /**

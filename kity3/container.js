@@ -7,14 +7,14 @@
 
  // TODO: addById(), removeById()
 function Container(id) {
-
     this.el = document.createElement('div');
     this.el.style.display = "inline-block";
-    document.body.appendChild(this.el);
     this.id = this.el.id = id;
-    this.spec = { el: '#'+id};
-    this.children = {};
-    
+    document.body.appendChild(this.el);
+    this.style = {};
+    this.spec = {el: '#'+id};
+    var children = {};
+
     /**
      * Adds text object to container.
      *
@@ -25,7 +25,7 @@ function Container(id) {
         var childEl = document.getElementById(textObj.id);
         parentEl.removeChild(childEl);
         this.el.appendChild(childEl);
-        this.children[textObj.id] = textObj;
+        children[textObj.id] = textObj;
     }
 
     /**
@@ -39,7 +39,7 @@ function Container(id) {
         var originParentEl = document.getElementById(textObj.parentId);
         this.el.removeChild(childEl);
         originParentEl.appendChild(childEl);
-        delete this.children[textObj.id];
+        delete children[textObj.id];
     }
 
     /**
@@ -48,13 +48,13 @@ function Container(id) {
      * @method claerAll
      */
     this.clearAll = function() {
-        for (var o in this.children) {
+        for (var o in children) {
             var textObj = children[o];
             var childEl = document.getElementById(textObj.id);
             var originParentEl = document.getElementById(textObj.parentId);
             this.el.removeChild(childEl);
             originParentEl.appendChild(childEl);
         }
-        this.children = {};
+        children = {};
     }
 }

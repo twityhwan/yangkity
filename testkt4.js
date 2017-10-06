@@ -5,11 +5,11 @@ window.onload = function() {
     }*/);
 
     var player = KITY.getPlayer();
-    var container = new Container('container');
+    var container = KITY.createContainer('container');
     for (var i=0; i<textObjs.length; i++) {
         var toX = 0;
         if (i!=0) toX = 30*textObjs[i-1].text.length;
-        KITY.setStyle(textObjs[i].id, {fontSize: 30});
+        KITY.setStyle(textObjs[i], {fontSize: 30});
         var spec = {
             x: {0: 100+toX, delay: 0, duration: 1},
             y: 200,
@@ -23,6 +23,9 @@ window.onload = function() {
     KITY.setAnimationSpec(container, {
         opacity: {1: 0, duration: 1},
         y: {0: -200, duration: 1}
+    });
+    KITY.setStyle(container, {
+        color: 'magenta'
     });
     player.add(KITY.createAnimation(container));
     player.play({mode: 'sequence'});
