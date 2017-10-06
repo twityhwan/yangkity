@@ -47,20 +47,7 @@ KITY.createText = function(text, targetId, id, type, style) {
     // 텍스트 객체 생성
     for (var i=0; i<textArr.length; i++) {
         var elId = id+'_'+type+'_'+i;
-        var textObj = {
-            id: elId,
-            parentId: targetId,
-            type: type, // 'line', 'word', 'char'
-            groupId: id, // 하나의 문장에서 파생됨
-            index: i, // line, word, char
-            text: textArr[i],
-            style: { // text Style 정보
-            },
-            spec: {
-                el: '#'+elId
-            }
-        }
-        createElement(targetId, elId, textArr[i]);
+        var textObj = new Text(textArr[i], elId, targetId, type, id, i);
         if (style) {
             KITY.setStyle(textObj, style);
         }
