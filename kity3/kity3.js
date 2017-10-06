@@ -90,11 +90,11 @@ KITY.createText = function(text, targetId, id, type, style) {
     for (var i=0; i<textArr.length; i++) {
         var elId = id+'_'+type+'_'+i;
         var textObj = new Text(textArr[i], elId, targetId, type, id, i);
+        objectMap[elId] = textObj;
         if (style) {
             KITY.setStyle(textObj, style);
         }
         txtObjArr.push(textObj);
-        objectMap[elId] = textObj;
     }
     
     return txtObjArr;
