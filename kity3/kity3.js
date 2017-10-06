@@ -15,6 +15,7 @@ var KITY;
 
 (function() {
 KITY = {};
+var textObjMap = {};
 
 /**
  * Creates text object.
@@ -41,7 +42,7 @@ KITY.createText = function(text, targetId, id, type, style) {
     var txtObjArr = [];
 
     // content 분리
-    var textArr = splitText(text, type);
+    var textArr = type ? splitText(text, type) : splitText(text, 'line');
 
     // 텍스트 객체 생성
     for (var i=0; i<textArr.length; i++) {
@@ -64,10 +65,9 @@ KITY.createText = function(text, targetId, id, type, style) {
             KITY.setStyle(textObj, style);
         }
         txtObjArr.push(textObj);
+        textObjMap[elId] = textObj;
     }
     
-
-
     return txtObjArr;
 }
 
@@ -100,14 +100,18 @@ var splitText = function(text, splitType) {
 
 
 /**
- * Sets style for object having id.
+ * Sets style for text object.
  *
- * @method setAttributes
+ * @method setStyle
  * @param textObj {String|Object} Text object or element id
  * @param style {Object} Style attributes
  * @return {Object} Text object
  */
 KITY.setStyle = function(textObj, style) {
+    // TODO: id string으로 받았을 때 처리(textObj, container)
+    if (typeof textObj === 'string') {
+        textObj = textObjMap[textObj];
+    }
 
     var el = document.getElementById(textObj.id);
     for (var o in style) {
@@ -126,6 +130,14 @@ KITY.setStyle = function(textObj, style) {
  */
 KITY.setAnimationSpec = function(textObj, spec) {
     // TODO: spec valid check
+    // TODO: id string으로 받았을 때 처리(textObj, container)
+    if (typeof textObj === 'string') {
+        textObj = textObjMap[textObj];
+    }
+
+    if ('getSpec' in spec) {
+        spec = spec.getSpec();
+    }
 
     for (var o in spec) {
         for(var o2 in spec[o]) {
@@ -134,7 +146,7 @@ KITY.setAnimationSpec = function(textObj, spec) {
             }
         }
     }
-
+    
     extend(textObj.spec, spec);
     return textObj;
 }
@@ -142,10 +154,11 @@ KITY.setAnimationSpec = function(textObj, spec) {
 /**
  * Clears all the animation specifications from text object.
  *
- * @method createAnimation
+ * @method createAnimationSpec
  * @param object {Object} Text object or Container object
  */
 KITY.clearAnimationSpec = function(object) {
+    // TODO: id string으로 받았을 때 처리(textObj, container)
     if (!object) {
         console.error("Wrong object ", object);
         return;
@@ -176,19 +189,8 @@ KITY.createContainer = function(id) {
  */
 KITY.createAnimation = function(object) {
     // TODO: then 처리
+    // TODO: id string으로 받았을 때 처리(textObj, container)
     return new mojs.Html(object.spec);
-}
-
-/**
- * Creates timeline.
- * Animation can be added to or removed from timeline.
- *
- * @method createTimeline
- * @return {Object} Timeline object
- */
-KITY.createTimeline = function() {
-    const timeline = new mojs.Timeline;
-    return timeline;
 }
 
 /**
