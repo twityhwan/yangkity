@@ -1,3 +1,8 @@
+var textObjMap = {};
+var isTextObj = function(id) {
+    return (id in textObjMap);
+}
+
 /**
 * Creates text object.
 *
@@ -9,36 +14,65 @@
 * @return {Array} txtObjArr Array of text object
 */
 var kityCreateTextObj = function(text, groupName, splitType, targetDIV) {
+    if(!isValidId(targetDIV)) return null;
     var txtObjArr = [];
-
-    //var el = createElement(targetDIV, groupName);
-
     // content 분리
     var textArr = splitText(text, groupName, splitType);
 
-    // 텍스트 객체 생성
     for (var i=0; i<textArr.length; i++) {
+        var elId = groupName+'_'+splitType+'_'+i;
         var textObj = {
-            textObjInfo: { // text 객체 정보
-                textType: splitType, // 'line', 'word', 'char'
-                GroupName: groupName, // 하나의 문장에서 파생됨
-                ID: i, // line, word, char
-                Content: textArr[i],
+            id: elId,
+            content: textArr[i],
+            groupName: groupName,
+            splitType: splitType,
+            color: 'black',
+            fontSize: 10,
+            top: 0,
+            left: 0,
+            opacity: 1,
+            rotation: 0,
+            scale: 1,
+            currentTop: 0,
+            currentLeft: 0,
+            motionFunc: {
+                rotation: {
+                    angle: undefined, // number
+                    goback: undefined, // boolean
+                },
+                scale: {
+                    size: undefined, // number
+                    goback: undefined, // boolean
+                },
+                opacity: {
+                    opacity: undefined, // number 0~1
+                    goback: undefined, // boolean
+                },
+                shaking: {
+                    size: undefined,
+                    goback: undefined, // boolean
+                },
+                line: {
+                    direction: undefined,
+                    length: undefined,
+                    goback: undefined, // boolean
+                },
+                circle: {
+                    angle: undefined,
+                    radius: undefined,
+                    goback: undefined, // boolean
+                }
             },
-            textObjAttr: { // text Style 정보
-                font: undefined,
-                fontsize: undefined,
-                fontcolor: undefined,
-                fontOpacity: undefined,
-                layout: undefined, // leftToRight, topToBottom, diagonal, point, userDef
-                initX: undefined,
-                initY: undefined
-            }
-        }
+            motion: undefined// last set motion
+        };
+        var el = createElement(targetDIV, elId, textObj.content);
+        textObjMap[elId] = textObj;
         txtObjArr.push(textObj);
     }
     return txtObjArr;
 }
+
+
 
 /**
 * Splits text by split type.
@@ -71,13 +105,13 @@ var splitText = function(text, groupName, splitType) {
 /**
 * Sets text attributes.
 *
-* @method kitySetTextAttr
+* @method kitySetTextObjAttr
 * @param {String} targetDIV Target element id
 * @param {Array} txtObjs Array of text object
 * @param {String} layout Arrange layout. layout := 'leftToRight'|'topToBottom'|'diagonal'|'point'|'userDef'
 * @param {Object} options Text attributes
 */
-var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
+var kitySetTextObjAttr = function(targetDIV, txtObjs, layout, options) {
     // 첫번째 객체의 initX, initY에 따라 이후 객체들의 값이 자동으로 셋팅됨.
     // TODO: X, Y 좌표 매칭
 
@@ -103,10 +137,6 @@ var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
     var top_ = options.top ? options.top : 0;
     var left_ = options.left ? options.left : 0;
     for (var i=0; i<txtObjs.length; i++) {
-        var info = txtObjs[i].textObjInfo;
-        var id = info.GroupName+'_'+info.textType+'_'+info.ID;
-        var el = createElement(targetDIV, id, info.Content);
-
         switch(layout) {
             case 'leftToRight':
             case 'point':
@@ -126,7 +156,7 @@ var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
 
         // CSS 스타일 적용
         if (Object.keys(options).length > 0) {
-            setStyle(id, options);
+            setStyle(txtObjs[i].id, options);
         }
     }
 }
@@ -136,7 +166,7 @@ var kitySetTextAttr = function(targetDIV, txtObjs, layout, options) {
 *
 * @method kitySetText
 * @param {String} targetDIV Target element id
-* @param {Array} textSet Array of text object id
+* @param {Array} textSet Array of text object index
 * @param {String} motionFunc Default motion function
 * @param {Array} timeSet Array of start(delay) time
 */
@@ -145,11 +175,92 @@ var kityExeMotionSeq = function(targetDIV, textSet, motionFunc, timeSet) {
     // 1. textSet의 인덱스로 animation 순서가 정해짐.
     // 2. StartTimeSet이랑 매칭하여 애니메이션 생성.
     // 3. 모션 실행.
-    /*
+    const timeline = new mojs.Timeline;
+    var targetEl = document.getElementById(targetDIV);
+    var nodes = targetEl.childNodes;
+    if (nodes.length < 1) return;
     for (var i=0; i<textSet.length; i++) {
         // TODO error handling
-        eval(motionFunc);
+        var txtObj = nodes[textSet[i]].id;
+        var obj = eval(motionFunc);
+        obj.delay = timeSet[i]*1000;
+        var animation = new mojs.Html(obj);
+        timeline.add(animation);
     }
-    */
+    timeline.play();
+}
 
+/**
+* Plays a single motion animation.
+*
+* @method kitySinglePlay
+* @param motionFunc {String} Default motion function
+* @param options {Object} Options for delay, duration, repeat
+*/
+var kitySinglePlay = function(motionFunc, options) {
+    // {delay, duration, repeat}
+    // TODO: Animation
+    var textObj = JSON.parse(motionFunc);
+    var target = textObj.id;
+    if (!target) {
+        console.error("target is wrong!! ", target);
+        return;
+    }
+    if (!isValidId(target) || !isTextObj(target)) return;
+    var animation;
+
+    var motion = textObj.motion;
+    var obj;
+    switch(motion) {
+        case 'line':
+            obj = getTransitionByDirection(textObj);
+            break;
+        case 'opacity':
+            obj = getTransitionByOpacity(textObj);
+            break;
+        case 'scale':
+            obj = getTransitionByScale(textObj);
+            break;
+        case 'rotation':
+            obj = getTransitionByRotation(textObj);
+            break;
+        default:
+            console.log("TODO!! "+motion);
+            break;
+    }
+
+    if (!Array.isArray(obj)) {
+        for (var op in options) {
+            if (op === 'delay' || op === 'duration') {
+                obj[op] = options[op]*1000;
+            } else if (op === 'repeat') {
+                obj[op] = options[op];
+            }
+
+        }
+        obj['el'] = '#'+target;
+        
+        //animation = new mojs.Html(obj);
+        //animation.replay();
+        
+    }
+    return obj;
+}
+
+/**
+* Gets a line motion function.
+*
+* @method kityLine
+* @param id {String} Text object id
+* @param options {Object} Options for direction and length
+*/
+var kityLine = function(id, options) {
+    // direction, length
+    if (!isValidId(id) || !isTextObj(id)) {
+        console.error("Wrong parameter type ", id);
+        return;
+    }
+
+    copyMotionOption(id, 'line', options);
+    return JSON.stringify(textObjMap[id]);
 }
