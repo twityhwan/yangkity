@@ -165,6 +165,67 @@ KITY.setStyleById = function(id, style) {
 }
 
 /**
+ * Sets layout for text objects
+ *
+ * @method setLayout
+ * @param textObjs {Array} Array of text objects
+ * @param layout {String} Layout mode
+ * @param options {Object} Options for css style
+ * <pre>
+ *      layout := 'leftToRight' | 'topToBottom' | 'diagonal' | 'point' | 'userDef'
+ * </pre>
+ * @return {Object} Target object
+ */
+KITY.setLayout = function(textObjs, layout, options) {
+    
+    if (!options || typeof options != 'object') {
+        options = {fontSize: 16};
+    }
+
+    // layout
+    switch(layout) {
+        case 'leftToRight':
+            options.position = 'static';
+            break;
+        case 'topToBottom':
+        case 'diagonal':
+        case 'point':
+            options.position = 'absolute';
+            break;
+        case 'userDef':
+            // TODO
+            break;
+    }
+
+    var top_ = options.top ? options.top : 0;
+    var left_ = options.left ? options.left : 0;
+    for (var i=0; i<textObjs.length; i++) {
+        switch(layout) {
+            case 'leftToRight':
+            case 'point':
+                // nothing to do
+                break;
+            case 'topToBottom':
+                options.top = top_ + i*options.fontSize;
+                break;
+            case 'diagonal':
+                options.top = top_ + i*options.fontSize;
+                options.left = left_ + i*options.fontSize;
+                break;
+            case 'userDef':
+                // TODO
+                break;
+        }
+
+        // CSS 스타일 적용
+        if (Object.keys(options).length > 0) {
+            KITY.setStyle(textObjs[i], options);
+        }
+    }
+    return textObjs;
+}
+
+/**
  * Sets animation spec for object.
  *
  * @method setAnimationSpec
