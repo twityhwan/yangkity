@@ -2,7 +2,6 @@ var textObjMap = {};
 var isTextObj = function(id) {
     return (id in textObjMap);
 }
-
 /**
 * Creates text object.
 *
@@ -116,7 +115,7 @@ var kitySetTextObjAttr = function(targetDIV, txtObjs, layout, options) {
     // TODO: X, Y 좌표 매칭
 
     if (!options || typeof options != 'object') {
-        options = {};
+        options = {fontsize: 16};
     }
 
     // layout
@@ -183,9 +182,24 @@ var kityExeMotionSeq = function(targetDIV, textSet, motionFunc, timeSet) {
         // TODO error handling
         var txtObj = nodes[textSet[i]].id;
         var obj = eval(motionFunc);
-        obj.delay = timeSet[i]*1000;
-        var animation = new mojs.Html(obj);
-        timeline.add(animation);
+        if (Array.isArray(obj)) {
+            for(var j=0; j<obj.length; j++) {
+                var obj_ = obj[j];
+                var delay = timeSet[i]*1000;
+                for(var k in obj_) {
+                    console.log(k);
+                    if (k != 'el' && typeof(obj_[k]) === 'object') {
+                        extend(obj_[k], {delay: delay});
+                    }
+                }
+                var animation = new mojs.Html(obj_);
+                timeline.add(animation);
+            }
+        } else {
+            obj.delay = timeSet[i]*1000;
+            var animation = new mojs.Html(obj);
+            timeline.add(animation);
+        }
     }
     timeline.play();
 }
@@ -248,6 +262,59 @@ var kitySinglePlay = function(motionFunc, options) {
 }
 
 /**
+* Plays motion animations parellely.
+*
+* @method kityPar
+* @param motionFunc {Arguments} Motion functions
+*/
+var kityPar = function() {
+    // {function, delay, duration, repeat}
+    var aniMap = {};
+    //const timeline = new mojs.Timeline;   
+    
+    for (var a in arguments) {
+        var textObj = JSON.parse(arguments[a].function);
+        var target = textObj.id;
+        var motion = textObj.motion;
+        var obj = {};
+
+        switch(motion) {
+            case 'line':
+                // x, y
+            case 'opacity':
+                // opacity
+            case 'scale':
+                // scale
+            case 'rotation':
+                // angleZ
+                obj = getParalAnimationSpec(textObj, obj, arguments[a]);
+                break;
+            default:
+                console.log("TODO!! "+motion);
+                return;
+        }
+
+        if (!(target in aniMap)) {
+            aniMap[target] = obj;
+        } else {
+            extend(aniMap[target], obj);
+        }
+    }
+
+    var objArr = [];
+    for (var ani in aniMap) {
+        var obj = aniMap[ani];
+        obj['el'] = '#'+ani;
+        objArr.push(obj);
+        //timeline.add(new mojs.Html(obj));
+    }
+    //timeline.play();
+    console.log(objArr);
+    return objArr;
+
+}
+
+/**
 * Gets a line motion function.
 *
 * @method kityLine
@@ -263,4 +330,67 @@ var kityLine = function(id, options) {
 
     copyMotionOption(id, 'line', options);
     return JSON.stringify(textObjMap[id]);
+}
+
+// 2. 기본 모션 함수
+/**
+* Rotates text object.
+*
+* @method kityStaticRotation
+* @param target {String} Text object
+* @param options {Object} Options
+* @return {String} Stringified text object
+*/
+var kityStaticRotation = function(target, options) {
+    // TODO: 현재 API는 Z축 회전만 지원함.
+    // {angle, goback}
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'rotation', options);
+    return JSON.stringify(textObjMap[target]);
+}
+
+/**
+* Sets scale animation for text object.
+*
+* @method kityStaticScale
+* @param target {String} Text object
+* @param options {Object} Options
+* @return {String} Stringified text object
+*/
+var kityStaticScale = function(target, options) {
+    // size, goback
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'scale', options);
+    return JSON.stringify(textObjMap[target]);
+}
+
+/**
+* Sets opacity animation for text object.
+*
+* @method kityStaticOpacity
+* @param target {String} Text object
+* @param options {Object} Options
+* @return {String} Stringified text object
+*/
+var kityStaticOpacity = function(target, options) {
+    // opacity, goback
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'opacity', options);
+    return JSON.stringify(textObjMap[target]);
+}
+
+/**
+* Sets shaking animation for text object.
+*
+* @method kityStaticShaking
+* @param target {String} Text object
+* @param options {Object} Options
+* @return {String} Stringified text object
+*/
+var kityStaticShaking = function(target, options) {
+    // TODO: 현재 API는 y값 (위아래) shaking만 지원.
+    // size, goback ???
+    if(!isValidId(target) || !isTextObj(target)) return;
+    copyMotionOption(target, 'shaking', options);
+    return JSON.stringify(textObjMap[target]);
 }

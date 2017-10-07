@@ -164,14 +164,15 @@ function extend(origin, copy) {
     }
 }
 
+// for kity2
 function getParalAnimationSpec(textObj, obj, args) {
     var motion = textObj.motion;
     var obj_ = {};
     var options = {};
     if ('duration' in args)
-        options['duration'] = args.duration;
+        options['duration'] = args.duration*1000;
     if ('delay' in args)
-        options['delay'] = args.delay;
+        options['delay'] = args.delay*1000;
     if ('repeat' in args)
         options['repeat'] = args.repeat;
 
