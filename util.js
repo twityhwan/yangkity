@@ -194,6 +194,7 @@ function getParalAnimationSpec(textObj, obj, args) {
             obj_ = getTransitionByRotation(textObj, obj, options);
             break;
     }
+    console.log(obj_);
     return obj_;
 }
 

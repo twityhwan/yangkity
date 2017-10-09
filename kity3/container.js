@@ -8,7 +8,6 @@
  // TODO: addById(), removeById()
 function Container(id) {
     var el = document.createElement('div');
-    el.style.display = "inline-block";
     this.id = el.id = id;
     document.body.appendChild(el);
     this.style = {};
@@ -44,7 +43,6 @@ function Container(id) {
     var changeParent = function(textObj) {
         var parentEl = document.getElementById(textObj.parentId);
         var childEl = document.getElementById(textObj.id);
-        parentEl.removeChild(childEl);
         el.appendChild(childEl);
         children[textObj.id] = textObj;
     }
@@ -59,7 +57,6 @@ function Container(id) {
     var returnParent = function(textObj) {
         var childEl = document.getElementById(textObj.id);
         var originParentEl = document.getElementById(textObj.parentId);
-        el.removeChild(childEl);
         originParentEl.appendChild(childEl);
         delete children[textObj.id];
     }
@@ -92,7 +89,6 @@ function Container(id) {
             var textObj = children[o];
             var childEl = document.getElementById(textObj.id);
             var originParentEl = document.getElementById(textObj.parentId);
-            el.removeChild(childEl);
             originParentEl.appendChild(childEl);
         }
         children = {};
