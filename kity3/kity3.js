@@ -84,7 +84,8 @@ KITY.createText = function(text, targetId, id, type, style) {
     var txtObjArr = [];
 
     // content 분리
-    var textArr = type ? splitText(text, type) : splitText(text, 'line');
+    if (!type) type = 'line';
+    var textArr = splitText(text, type);
 
     // 텍스트 객체 생성
     for (var i=0; i<textArr.length; i++) {
