@@ -26,7 +26,7 @@ var kityCreateTextObj = function(text, groupName, splitType, targetDIV) {
             groupName: groupName,
             splitType: splitType,
             color: 'black',
-            fontSize: 10,
+            fontsize: 10,
             top: 0,
             left: 0,
             opacity: 1,
@@ -158,6 +158,9 @@ var kitySetTextObjAttr = function(targetDIV, txtObjs, layout, options) {
         // CSS 스타일 적용
         if (Object.keys(options).length > 0) {
             setStyle(txtObjs[i].id, options);
+            if('fontOpacity' in options) {
+                txtObjs[i].opacity = options.fontOpacity;
+            }
         }
     }
 }
@@ -217,6 +220,7 @@ var kitySinglePlay = function(motionFunc, options) {
     // {delay, duration, repeat}
     // TODO: Animation
     var textObj = JSON.parse(motionFunc);
+    console.log(textObj);
     var target = textObj.id;
     if (!target) {
         console.error("target is wrong!! ", target);
