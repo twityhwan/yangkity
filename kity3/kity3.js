@@ -96,7 +96,6 @@ KITY.createText = function(text, targetId, id, type, style) {
         }
         txtObjArr.push(textObj);
     }
-    console.log(textArr);
     
     return txtObjArr;
 }
@@ -181,6 +180,8 @@ KITY.setLayout = function(textObjs, layout, options) {
     
     if (!options || typeof options != 'object') {
         options = {fontSize: 16};
+    } else if (!('fontSize' in options)) {
+        options.fontSize = 16;
     }
 
     // layout
@@ -198,11 +199,11 @@ KITY.setLayout = function(textObjs, layout, options) {
             break;
     }
 
+    // TODO: topGap, leftGap 설정
     var top_ = options.top ? options.top : 0;
     var left_ = options.left ? options.left : 0;
     var length = 0;
     for (var i=0; i<textObjs.length; i++) {
-        console.log(textObjs[i]);
         switch(layout) {
             case 'leftToRight':
             case 'point':
@@ -213,7 +214,11 @@ KITY.setLayout = function(textObjs, layout, options) {
                 break;
             case 'diagonal':
                 options.top = top_ + i*options.fontSize;
-                options.left = left_ + length*options.fontSize;
+                if (options.length) {
+                    options.left = left_ + options.length*i;
+                } else {
+                    options.left = left_ + length*options.fontSize;
+                }
                 break;
             case 'userDef':
                 // TODO
@@ -224,6 +229,7 @@ KITY.setLayout = function(textObjs, layout, options) {
         if (Object.keys(options).length > 0) {
             KITY.setStyle(textObjs[i], options);
         }
+
         length += textObjs[i].text.length;
     }
     return textObjs;

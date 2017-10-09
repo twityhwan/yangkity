@@ -116,6 +116,8 @@ var kitySetTextObjAttr = function(targetDIV, txtObjs, layout, options) {
 
     if (!options || typeof options != 'object') {
         options = {fontsize: 16};
+    } else if (!('fontsize' in options)) {
+        options.fontsize = 16;
     }
 
     // layout
@@ -181,13 +183,13 @@ var kityExeMotionSeq = function(targetDIV, textSet, motionFunc, timeSet) {
     for (var i=0; i<textSet.length; i++) {
         // TODO error handling
         var txtObj = nodes[textSet[i]].id;
+
         var obj = eval(motionFunc);
         if (Array.isArray(obj)) {
             for(var j=0; j<obj.length; j++) {
                 var obj_ = obj[j];
                 var delay = timeSet[i]*1000;
                 for(var k in obj_) {
-                    console.log(k);
                     if (k != 'el' && typeof(obj_[k]) === 'object') {
                         extend(obj_[k], {delay: delay});
                     }
@@ -309,7 +311,6 @@ var kityPar = function() {
         //timeline.add(new mojs.Html(obj));
     }
     //timeline.play();
-    console.log(objArr);
     return objArr;
 
 }
