@@ -11,27 +11,26 @@ Player.animations = [];
 Player.timeline;
 
 /**
- * Adds animation(s) to player.
+ * Adds target objects to player.
  *
  * @method add
- * @param animation {Array|Object} Array of animation or animation object
+ * @param targetObj {Array|Object} Array of target object or target object
  */
-Player.add = function(animation) {
-    if (Array.isArray(animation)) {
-        Player.animations.concat(animation);
-    } else if (typeof animation === 'object'
-            && Object.keys(animation).length > 0) {
-        Player.animations.push(animation);
+Player.add = function(targetObj) {
+    if (Array.isArray(targetObj)) {
+        for (var o in targetObj) {
+            pushAnimation(targetObj[o]);
+        }
+    } else {
+        pushAnimation(targetObj);
     }
 }
 
-/**
- * Sets timeline to player.
- *
- * @method set
- * @return {Object} Timeline object
- */
-Player.set = function(timeline) {
+function pushAnimation(obj) {
+    if (typeof obj === 'object'&& 'spec' in obj) {
+        var animation = new mojs.Html(obj.spec);
+        Player.animations.push(animation);
+    }
 }
 
 /**

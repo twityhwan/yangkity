@@ -335,36 +335,6 @@ KITY.createContainer = function(id) {
 }
 
 /**
- * Creates animation object.
- *
- * @method createAnimation
- * @param targetObj {Object} Target object
- * @return {Object} Animation object
- */
-KITY.createAnimation = function(targetObj) {
-    // TODO: then 처리
-    if (!isValidObject(targetObj)) {
-        return;
-    }
-    return new mojs.Html(targetObj.spec);
-}
-
-/**
- * Creates animation object by id.
- *
- * @method createAnimationById
- * @param id {String} Id of target object
- * @return {Object} Animation object
- */
-KITY.createAnimationById = function(id) {
-    // TODO: then 처리
-    if (!isValidId(id)) {
-        return;
-    }
-    KITY.createAnimation(objectMap[id]);
-}
-
-/**
  * Gets player. Player can control kinetic typography animation.
  *
  * @method getPlayer
