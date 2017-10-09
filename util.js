@@ -221,7 +221,7 @@ var setStyle = function(target, options) {
             textEl.style.left = options.left;
             break;
         case "fontOpacity":
-            textEl.style.opacity = options.opacity;
+            textEl.style.opacity = options.fontOpacity;
             break;
         case "initX":
             textEl.style.initX = options.initX;
