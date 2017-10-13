@@ -155,14 +155,40 @@ window.onload = function() {
     KITY.play(txtObjArr.concat([container]));
     */
     //const mojsPlayer = new MojsPlayer({ add: timeline });
-    var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "char");
-    var randomDelay = [0, 1, 2, 1.5, 0.5];
+
+    /*
+    var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "word", {opacity: 0});
+    KITY.setLayout(txtObjArr, "topToBottom");
+    var container = KITY.createContainer('container', targetDIV);
     for (var i in txtObjArr) {
         KITY.setAnimationSpec(txtObjArr[i], {
-            y: {0: 100, duration: 2, delay: randomDelay[i]}
+            opacity: {0:1, duration: 0.5, delay: i*0.5}
         });
     }
-    KITY.play(txtObjArr);
+
+    container.add(txtObjArr);
+    KITY.setAnimationSpec(container, {
+        angleX: {0: 360, duration: 3},
+    });
+    KITY.play([txtObjArr, container], {mode: 'sequence'});
+    */
+
+    var txtObjArr1 = KITY.createText("나도 너를", targetDIV, "kinetic", "word", {opacity: 0});
+    var txtObjArr2 = KITY.createText("좋아해", targetDIV, "kinetic", "char", {opacity: 0});
+    KITY.setLayout(txtObjArr1, "topToBottom");
+    var txtObjArr = txtObjArr1.concat(txtObjArr2);
+    var container = KITY.createContainer('container', targetDIV);
+    for (var i in txtObjArr) {
+        KITY.setAnimationSpec(txtObjArr[i], {
+            opacity: {0:1, duration: 0.5, delay: i*0.5}
+        });
+    }
+
+    container.add(txtObjArr);
+    KITY.setAnimationSpec(container, {
+        angleX: {0: 360, duration: 3},
+    });
+    KITY.play([txtObjArr, container], {mode: 'sequence'});
 
 }
 /*

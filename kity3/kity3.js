@@ -180,7 +180,6 @@ KITY.setStyleById = function(id, style) {
  * @return {Object} Target object
  */
 KITY.setLayout = function(textObjs, layout, options) {
-    
     if (!options || typeof options != 'object') {
         options = {fontSize: 16};
     } else if (!('fontSize' in options)) {
@@ -330,8 +329,8 @@ KITY.clearAnimationSpecById = function(id) {
  * @param id {String} Element id
  * @return {Object} Container object
  */
-KITY.createContainer = function(id) {
-    var container = new Container(id);
+KITY.createContainer = function(id, parentId) {
+    var container = new Container(id, parentId);
     objectMap[id] = container;
     return container;
 }
@@ -374,6 +373,10 @@ KITY.play = function(targetObj, options) {
 function pushAnimation(obj) {
     if (typeof obj === 'object'&& 'spec' in obj) {
         animations.push(new mojs.Html(obj.spec));
+    } else if (Array.isArray(obj)) {
+        for (var o in obj) {
+            pushAnimation(obj[o]);
+        }
     }
 }
 
