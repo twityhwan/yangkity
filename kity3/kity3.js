@@ -171,7 +171,7 @@ KITY.setStyleById = function(id, style) {
  * Sets layout for text objects
  *
  * @method setLayout
- * @param textObjs {Array} Array of text objects
+ * @param targetObj {Array} Array of text objects or Container
  * @param layout {String} Layout mode
  * @param options {Object} Options for css style
  * <pre>
@@ -179,35 +179,55 @@ KITY.setStyleById = function(id, style) {
  * </pre>
  * @return {Object} Target object
  */
-KITY.setLayout = function(textObjs, layout, options) {
+KITY.setLayout = function(targetObj, layout, options) {
+    if ('type' in targetObj && targetObj.type == 'container') {
+        console.log("container set layout!!");
+        setContainerLayout(targetObj, layout, options);
+    } else {
+        setTextLayout(targetObj, layout, options);
+    }
+
+    return targetObj;
+}
+
+/**
+ * Sets layout for Container.
+ *
+ * @method setContainerLayout
+ * @param contObj {Object} Container object
+ * @param layout {String} Layout string
+ * @param options {Object} Options
+ * @return {Object} Text object
+ */
+var setContainerLayout = function(contObj, layout, options) {
+    if (contObj.type != 'container') {
+        return contObj;
+    }
+
     if (!options || typeof options != 'object') {
-        options = {fontSize: 16};
-    } else if (!('fontSize' in options)) {
-        options.fontSize = 16;
+        options = {};
     }
 
-    // layout
-    switch(layout) {
-        case 'leftToRight':
-            options.position = 'static';
-            break;
-        case 'topToBottom':
-        case 'diagonal':
-        case 'point':
-            options.position = 'absolute';
-            break;
-        case 'userDef':
-            // TODO
-            break;
-    }
+    options.position = 'absolute';
 
-    // TODO: topGap, leftGap 설정
     var top_ = options.top ? options.top : 0;
     var left_ = options.left ? options.left : 0;
     var length = 0;
-    for (var i=0; i<textObjs.length; i++) {
+    var children = contObj.getChildren();
+    console.log(children);
+    
+    for (var c in children) {
+        console.log(children[c]);
+        //console.log(children[i]);
+        /*
         switch(layout) {
             case 'leftToRight':
+                if (options.length) {
+                    options.left = left_ + options.length*i;
+                } else {
+                    options.left = left_ + length*options.fontSize;
+                }
+                break;
             case 'point':
                 // nothing to do
                 break;
@@ -229,12 +249,86 @@ KITY.setLayout = function(textObjs, layout, options) {
 
         // CSS 스타일 적용
         if (Object.keys(options).length > 0) {
+            KITY.setStyle(contObjs[i], options);
+        }
+        
+
+        length += contObjs[i].length;
+        */
+    }
+    return contObj;
+}
+
+/**
+ * Sets layout for Text.
+ *
+ * @method setTextLayout
+ * @param textObjs {Object} Text object
+ * @param layout {String} Layout string
+ * @param options {Object} Options
+ * @return {Object} Text object
+ */
+var setTextLayout = function(textObjs, layout, options) {
+    if (!options || typeof options != 'object') {
+        options = {fontSize: 16};
+    } else if (!('fontSize' in options)) {
+        options.fontSize = 16;
+    }
+
+    // layout
+    /*
+    switch(layout) {
+        case 'leftToRight':
+            //options.position = 'static';
+            //break;
+        case 'topToBottom':
+        case 'diagonal':
+        case 'point':
+            //options.position = 'absolute';
+            break;
+        case 'userDef':
+            // TODO
+            break;
+    }
+    */
+    options.position = 'relative';
+
+    // TODO: topGap, leftGap 설정
+    var top_ = options.top ? options.top : 0;
+    var left_ = options.left ? options.left : 0;
+    for (var i=0; i<textObjs.length; i++) {
+        switch(layout) {
+            case 'leftToRight':
+                // nothing to do
+                break;
+            case 'point':
+                if (i>0) {
+                    options.left = left_ - length*options.fontSize;
+                }
+                break;
+            case 'topToBottom':
+                options.top = top_ + i*options.fontSize;
+                if (i>0) {
+                    options.left = left_ - length*options.fontSize;
+                }
+                break;
+            case 'diagonal':
+                options.top = top_ + i*options.fontSize;
+
+                break;
+            case 'userDef':
+                // TODO
+                break;
+        }
+
+        // CSS 스타일 적용
+        if (Object.keys(options).length > 0) {
             KITY.setStyle(textObjs[i], options);
         }
 
         length += textObjs[i].text.length;
     }
-    return textObjs;
+    return textObjs
 }
 
 /**

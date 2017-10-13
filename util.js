@@ -11,7 +11,7 @@ function createElement(targetId, id, text) {
     var el = document.createElement('div');
     el.id = id;
     el.style.display = "inline-block";
-    el.innerHTML = text;
+    if (text) el.innerHTML = text;
     div.appendChild(el);
     return el;
 }

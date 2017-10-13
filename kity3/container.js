@@ -6,12 +6,21 @@
  */
 
  // TODO: addById(), removeById()
-function Container(id) {
-    var el = document.createElement('div');
-    this.id = el.id = id;
-    document.body.appendChild(el);
-    this.style = {};
+function Container(id, parentId) {
+    this.id = id;
+    this.parentId = parentId;
+    this.style = {
+        /*
+        display: "flex",
+        flexWrap: "wrap",
+        */
+        position: 'relative',
+    };
+    this.type = 'container';
     this.spec = {el: '#'+id};
+
+    var el = createElement(parentId, id);
+    extend(el.style, this.style);
     var children = {};
 
     /**
@@ -31,6 +40,10 @@ function Container(id) {
         }
 
         return this;
+    }
+
+    this.getChildren = function() {
+        return children;
     }
 
     /**
