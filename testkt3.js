@@ -7,12 +7,6 @@ window.onload = function() {
     var player = KITY.getPlayer();
     var container = KITY.createContainer('container');
     for (var i=0; i<textObjs.length; i++) {
-        /*
-        KITY.setStyle(textObjs[i], {
-            font: 'italic bold 20px arial,serif',
-            color: 'blue'
-        });
-        */
         var spec = {
             y: {100: 200, delay: i, duration: 2, repeat: 1},
             opacity: {1: 0.5, delay: i, duration: 1, repeat: 1},
@@ -29,6 +23,17 @@ window.onload = function() {
     }
     KITY.setAnimationSpec(container, spec);
     var animation = KITY.createAnimation(container);
+
+    player.add(animation);
+    KITY.clearAnimationSpec(container);
+
+
+    textObjs = KITY.createText("추석 한가위 잘 보내세요~", "parent", "chu", "word");
+    KITY.setLayout(textObjs, 'diagonal');
+    var aniSpec = new AnimationSpec();
+    aniSpec.rotationZ({0: 30, duration: 1});
+    KITY.setAnimationSpec(textObjs[0], aniSpec);
+    animation = KITY.createAnimation(textObjs[0]);
     player.add(animation);
     player.play({mode: 'parallel'});
 }

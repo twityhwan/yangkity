@@ -16,6 +16,8 @@ var KITY;
 (function() {
 KITY = {};
 var objectMap = {};
+var animations = [];
+var timeline;
 
 /**
 * Checks if target object is valid.
@@ -335,13 +337,44 @@ KITY.createContainer = function(id) {
 }
 
 /**
- * Gets player. Player can control kinetic typography animation.
+ * Plays animation in timeline.
  *
- * @method getPlayer
- * @return {Object} Player object
+ * @method play
+ * @param targetObj {Object|Array} Target object or Array of target objects.
+ * @param options {Object} Options. It can be play mode or animation object. If you input animation object, it will be played once.
+ * <pre>
+ *      options.mode := 'parallel' | 'sequence'
+ * </pre>
  */
-KITY.getPlayer = function() {
-    return Player;
+KITY.play = function(targetObj, options) {
+    if (Array.isArray(targetObj)) {
+        for (var o in targetObj) {
+            pushAnimation(targetObj[o]);
+        }
+    } else {
+        pushAnimation(targetObj);
+    }
+
+    if (!options) options = {};
+    timeline = new mojs.Timeline;
+    if (options.mode == 'parallel' || Object.keys(options).length === 0) {
+        for (var i=0; i<animations.length; i++) {
+            timeline.add(animations[i]);
+        }
+    } else if (options.mode == 'sequence') {
+        for (var i=0; i<animations.length; i++) {
+            timeline.append(animations[i]);
+        }
+    } else {
+        timeline.add(options);
+    }
+    timeline.play();
+}
+
+function pushAnimation(obj) {
+    if (typeof obj === 'object'&& 'spec' in obj) {
+        animations.push(new mojs.Html(obj.spec));
+    }
 }
 
 })();
