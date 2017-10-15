@@ -212,39 +212,7 @@ var setContainerLayout = function(contObj, layout, options) {
 
     var top_ = options.top ? options.top : 0;
     var left_ = options.left ? options.left : 0;
-    var length = 0;
-    var children = contObj.getChildren();
-    console.log(children);
-    
-    for (var i=0; i<children.length; i++) {
-        console.log('child: ', children[i]);
-        //console.log(children[i]);
-        
-        switch(layout) {
-            case 'leftToRight':
 
-                break;
-            case 'point':
-                // nothing to do
-                break;
-            case 'topToBottom':
-                
-                break;
-            case 'diagonal':
-                break;
-            case 'userDef':
-                // TODO
-                break;
-        }
-
-        // CSS 스타일 적용
-        if (Object.keys(options).length > 0) {
-            KITY.setStyle(children[i], options);
-        }
-    
-        length += chidlren[i].length;
-        
-    }
     return contObj;
 }
 
@@ -259,6 +227,8 @@ var setContainerLayout = function(contObj, layout, options) {
  */
 var setTextLayout = function(textObjs, layout, options) {
 
+    if (textObjs.length < 1) return;
+
     if (!options || typeof options != 'object') {
         options = {};
     }
@@ -266,8 +236,9 @@ var setTextLayout = function(textObjs, layout, options) {
     options.position = 'relative';
     
     // TODO: topGap, leftGap 설정
-    var top_ = options.top ? options.top : 0;
-    var left_ = options.left ? options.left : 0;
+    var firstEl = document.getElementById(textObjs[0].id);
+    var top_ = options.top ? options.top : firstEl.top;
+    var left_ = options.left ? options.left : firstEl.left;
     var preEl;
     var width = 0, height = 0;
     for (var i=0; i<textObjs.length; i++) {
