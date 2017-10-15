@@ -48,7 +48,7 @@ var sampleList = [{
         'KITY.play(txtObjArr[0]);',
     }, {
         title: "sample2",
-        description: "",
+        description: "단어 단위의 '헬로 키네틱' 텍스트를 각 텍스트가 1초의 간격을 두고 4초 동안 오른쪽으로 200px 이동",
         source: 'var targetDIV = "parent";\n'+
         'var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "word");\n'+
         'KITY.setLayout(txtObjArr, "topToBottom");\n'+
@@ -60,7 +60,7 @@ var sampleList = [{
         'KITY.play(txtObjArr);'
     }, {
         title: "sample3",
-        description: "",
+        description: "단어 단위의 '헬로 키네틱' 텍스트를 각 텍스트가 1초의 간격을 두고 4초 동안 오른쪽으로 200px 직선 이동과 동시에 글자 크기 50% 축소",
         source: 'var targetDIV = "parent";\n'+
         'var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "word");\n'+
         'KITY.setLayout(txtObjArr, "topToBottom");\n'+
@@ -85,6 +85,51 @@ var sampleList = [{
         '    });\n'+
         '}\n'+
         'KITY.play(txtObjArr);', 
+    },  {
+        title: "sample5",
+        description: "글자 단위의 '헬로 키네틱' 텍스트 객체를 각 텍스트가 1초 간격으로 1초 동안 불투명도 100%에서 0%로 변화",
+        source: 'var targetDIV = "parent";\n'+
+        'var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "char");\n'+
+        'for (var i in txtObjArr) {\n'+
+        '    KITY.setAnimationSpec(txtObjArr[i], {\n'+
+        '        opacity: {1: 0, duration: 1}\n'+
+        '    });\n'+
+        '}\n'+
+        'KITY.play(txtObjArr, {mode: "sequence"});',
+    }, {
+        title: "sample6",
+        description: "글자 단위의 '헬로 키네틱' 텍스트 객체를 각 텍스트가 0.5초 간격으로 2초 동안 아래쪽으로 100px 직선 이동",
+        source: 'var targetDIV = "parent";\n'+
+        'var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "char");\n'+
+        'for (var i in txtObjArr) {\n'+
+        '    KITY.setAnimationSpec(txtObjArr[i], {\n'+
+        '        y: {0: 100, duration: 2, delay: (txtObjArr.length-i-1)*0.5}\n'+
+        '    });\n'+
+        '}\n'+
+        'KITY.play(txtObjArr);',
+    },  {
+        title: "sample7",
+        description: "글자 단위의 '헬로 키네틱' 텍스트 객체를 동시에 4초 동안 오른쪽으로 200px 직선 이동",
+        source: 'var targetDIV = "parent";\n'+
+        'var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "char");\n'+
+        'KITY.setLayout(txtObjArr, "diagonal");\n'+
+        'for (var i in txtObjArr) {\n'+
+        '    KITY.setAnimationSpec(txtObjArr[i], {\n'+
+        '        x: {0: 200, duration: 4}\n'+
+        '    });\n'+
+        '}\n'+
+        'KITY.play(txtObjArr);',
+    },   {
+        title: "sample8",
+        description: "글자 단위의 '헬로 키네틱' 텍스트 객체를 각 텍스트가 0.5초 간격으로 2초 동안 아래쪽으로 100px 직선 이동",
+        source: 'var targetDIV = "parent";\n'+
+        'var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "char");\n'+
+        'var randomDelay = [0, 1, 2, 1.5, 0.5];\n'+
+        'for (var i in txtObjArr) {\n'+
+        '    KITY.setAnimationSpec(txtObjArr[i], {\n'+
+        '        y: {0: 100, duration: 2, delay: randomDelay[i]}\n'+
+        '    });\n'+
+        '}\n'+
+        'KITY.play(txtObjArr);',
     }
-
 ];
