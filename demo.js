@@ -17,15 +17,47 @@ window.onload = function() {
     selected = sampleList[0].title;
 }
 
-function play() {
-    // reset parent div
-    while(parentEl.hasChildNodes()) {
-        parentEl.removeChild(parentEl.firstChild);
+var i=0;
+function removeChild(el) {
+    console.log("removeChild", el);
+    /*
+
+    while(el.hasChildNodes()) {
+        console.log("el hasChildNodes");
+        if (i++> 20) {
+            console.log("!!!!!!!!!!!!!", i);
+            break;
+        }
+        if (el.firstChild.hasChildNodes()) {
+            console.log("???", el.firstChild.firstChild);
+            removeChild(el.firstChild.firstChild);
+        } else {
+            console.log("removed", el.firstChild);
+            el.removeChild(el.firstChild);
+        }
     }
 
+    if(!el.hasChildNodes()) {
+        console.log("no child nodes");
+    }
+    */
+    while(el.firstChild) {
+        el.removeChild(el.firstChild);
+    }
+
+}
+
+var isPlayed = false;
+function play() {
+    // reset parent div
+    removeChild(parentEl);
     var text = textAreaEl.value;
     text = text.replace('\n', '');
-    eval(text);
+    //if (!isPlayed) {
+        console.log("play");
+        eval(text);
+    //}
+    //eval(text);
 }
 
 function onSampleSelected() {
@@ -107,7 +139,7 @@ var sampleList = [{
         '    });\n'+
         '}\n'+
         'KITY.play(txtObjArr);',
-    },  {
+    }, {
         title: "sample7",
         description: "글자 단위의 '헬로 키네틱' 텍스트 객체를 동시에 4초 동안 오른쪽으로 200px 직선 이동",
         source: 'var targetDIV = "parent";\n'+
@@ -119,7 +151,7 @@ var sampleList = [{
         '    });\n'+
         '}\n'+
         'KITY.play(txtObjArr);',
-    },   {
+    }, {
         title: "sample8",
         description: "글자 단위의 '헬로 키네틱' 텍스트 객체를 각 텍스트가 0.5초 간격으로 2초 동안 아래쪽으로 100px 직선 이동",
         source: 'var targetDIV = "parent";\n'+
@@ -131,5 +163,67 @@ var sampleList = [{
         '    });\n'+
         '}\n'+
         'KITY.play(txtObjArr);',
+    }, {
+        title: "sample2-1",
+        description: "단어 단위의 '나도 어디서 꿇리진 않아' 텍스트 객체를 각 텍스트가 0.5초 간격으로 0.5초 동안 순서대로 나타난다. '꿇리지' 단어 시점에 전체 텍스트의 크기가 축소되었다가 원래 크기로 돌아온다.",
+        source: 'var targetDIV = "parent";\n'+
+        'var txtObjArr = KITY.createText("나도 어디서 꿇리진 않아", targetDIV, "kinetic", "word",\n'+
+        '{font: "20px bold", "padding-right": 5});\n'+
+        'for (var i in txtObjArr) {\n'+
+        '    KITY.setAnimationSpec(txtObjArr[i], {\n'+
+        '        opacity: {0:1, duration: 0.5, delay: i*0.5},\n'+
+        '    });\n'+
+        '}\n'+
+        'var container = KITY.createContainer("container", "parent");\n'+
+        'container.add(txtObjArr);\n'+
+        'KITY.setAnimationSpec(container, {\n'+
+        '    scaleY: {1: 0.8, duration: 0.5, delay: 1}\n'+
+        '}, {\n'+
+        '    scaleY: {0.8: 1, duration: 0.5}\n'+
+        '});\n'+
+        'KITY.play([txtObjArr, container]);\n'
+    }, {
+        title: "sample2-2",
+        description: "'너를', '본 내 마음속에', '사랑이' 텍스트가 위에서 아래로 배치되고, '너를'은 각 글자가 불투명도 0%에서 100%로 나타난다. "+
+        "'본 내 마음속에'는 각 글자가 위에서 아래로 이동하며 나타난다. '사랑이'는 회전하면서 나타난다. 각 글자의 애니메이션 시간과 간격은 1초씩이다.",
+        source: 'var targetDIV = "parent";\n'+
+        'var line1 = KITY.createText("너를", targetDIV, "line1", "char", {\n'+
+        '    font: "75px bold", "padding-right": "5px", opacity: 0,\n'+
+        '    "background-color": "white", color: "#33cc33"\n'+
+        '});\n'+
+        'var line2_1 = KITY.createText("본 내", targetDIV, "line2_1", "char", {\n'+
+        '    font: "23px bold", "padding-right": "5px", opacity: 0, color: "#0059b3"\n'+
+        '});\n'+
+        'var line2_2 = KITY.createText("마음속에", targetDIV, "line2_2", "char", {\n'+
+        '    font: "23px bold", opacity: 0, color: "#0059b3"\n'+
+        '});\n'+
+        'var line3 = KITY.createText("사랑이", targetDIV, "line3", "char", {\n'+
+        '    font: "50px bold", opacity: 0, color: "red"\n'+
+        '});\n'+
+        'for (var i in line1) {\n'+
+        '    KITY.setAnimationSpec(line1[i], {\n'+
+        '        opacity: {0: 1, duration: 0.1, delay: 0.1}\n'+
+        '    });\n'+
+        '}\n\n'+
+        'var line2 = line2_1.concat(line2_2);\n'+
+        'for (var i in line2) {\n'+
+        '    KITY.setAnimationSpec(line2[i], {\n'+
+        '        opacity: {0: 1, duration: 0.1, delay: 0.1},\n'+
+        '        y: {[-28]: 0, duration: 0.1, delay: 0.1}\n'+
+        '    });\n'+
+        '}\n\n'+
+        'for (var i in line3) {\n'+
+        '    KITY.setAnimationSpec(line3[i], {\n'+
+        '        opacity: {0: 1, duration: 0.2, delay: 0.2},\n'+
+        '        angleZ: {0: 360, duration: 0.2, delay: 0.2}\n'+
+        '    });\n'+
+        '}\n\n'+
+        'var line2Cont = KITY.createContainer("line2Cont", targetDIV);\n'+
+        'line2Cont.add(line2);\n'+
+        'KITY.setStyle(line2Cont, {top: 23+5, left: -150});\n'+
+        'var line3Cont = KITY.createContainer("line3Cont", targetDIV);\n'+
+        'line3Cont.add(line3);\n'+
+        'KITY.setStyle(line3Cont, {top: 23+55, left: -(150+148)});\n\n'+
+        'KITY.play([line1, line2, line3], {mode: "sequence"});\n'
     }
 ];
