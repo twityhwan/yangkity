@@ -237,8 +237,19 @@ var setTextLayout = function(textObjs, layout, options) {
     
     // TODO: topGap, leftGap 설정
     var firstEl = document.getElementById(textObjs[0].id);
-    var top_ = options.top ? options.top : firstEl.top;
-    var left_ = options.left ? options.left : firstEl.left;
+    var top_ = 0, left_ = 0;
+    if (options.top) {
+        top_ = options.top;
+    } else {
+        if (firstEl.style.top) top_ = Number.parseFloat((firstEl.style.top).replace('px',''));
+    }
+
+    if (options.left) {
+        left_ = options.left;
+    } else {
+        if (firstEl.style.left) left_ = Number.parseFloat((firstEl.style.left).replace('px', ''));
+    }
+
     var preEl;
     var width = 0, height = 0;
     for (var i=0; i<textObjs.length; i++) {
@@ -254,7 +265,7 @@ var setTextLayout = function(textObjs, layout, options) {
             case 'topToBottom':
                 if (i>0) {
                     options.top = top_ + height;
-                    options.left = left_ -width;
+                    options.left = left_ - width;
                 }
                 break;
             case 'diagonal':
