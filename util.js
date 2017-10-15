@@ -238,3 +238,8 @@ var setStyle = function(target, options) {
         }
     }
 }
+
+function sortArgs() {
+    var args = Array.prototype.slice.call(arguments);
+    return args.sort();
+}

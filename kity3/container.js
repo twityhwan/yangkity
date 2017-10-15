@@ -6,7 +6,7 @@
  */
 
  // TODO: addById(), removeById()
-function Container(id, parentId) {
+function Container(id, parentId, width, height) {
     this.id = id;
     this.parentId = parentId;
     this.style = {
@@ -16,13 +16,21 @@ function Container(id, parentId) {
         */
         position: 'relative',
     };
+
     this.type = 'container';
-    this.spec = {el: '#'+id};
+    this.specs = [];
 
     var el = createElement(parentId, id);
     extend(el.style, this.style);
+
+    if (width) el.width = width;
+    if (height) el.height = height;
+
     var children = {};
 
+    var hasChildren = function(id) {
+        return (id in children);
+    }
     /**
      * Adds text object to container.
      *
@@ -31,15 +39,30 @@ function Container(id, parentId) {
      * @return {Object} Container itself
      */
     this.add = function(textObj) {
+        var args = sortArgs(arguments)[0];
+        
+        for (var i=0; i<args.length; i++) {
+            var textObj = args[i];
+            add(textObj);
+        }
+        return this;
+    }
+
+    var add = function(textObj) {
         if (Array.isArray(textObj)) {
             for (var i in textObj) {
-                changeParent(textObj[i]);
+                add(textObj[i]);
             }
         } else if (typeof textObj === 'object') {
+            if (hasChildren(textObj.id)) {
+                console.error("Container has Text object already ", textObj);
+                return;
+            }
             changeParent(textObj);
+        } else {
+            console.error("Wrong arguments ", arguments);
         }
-
-        return this;
+        return textObj;
     }
 
     this.getChildren = function() {
