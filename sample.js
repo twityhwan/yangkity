@@ -173,22 +173,89 @@ window.onload = function() {
     KITY.play([txtObjArr, container], {mode: 'sequence'});
     */
 
-    var txtObjArr1 = KITY.createText("나도 너를", targetDIV, "kinetic", "word", {opacity: 0});
-    var txtObjArr2 = KITY.createText("좋아해", targetDIV, "kinetic", "char", {opacity: 0});
-    KITY.setLayout(txtObjArr1, "topToBottom");
-    var txtObjArr = txtObjArr1.concat(txtObjArr2);
-    var container = KITY.createContainer('container', targetDIV);
+    /*
+    var txtObjArr = KITY.createText("춤을 추지 않나요", targetDIV, "kinetic", "word", {opacity: 0});
+    KITY.setLayout(txtObjArr, "topToBottom", {align: 'center'});
+    var container = KITY.createContainer('container', targetDIV, 200, 200);
     for (var i in txtObjArr) {
         KITY.setAnimationSpec(txtObjArr[i], {
             opacity: {0:1, duration: 0.5, delay: i*0.5}
         });
     }
-
     container.add(txtObjArr);
     KITY.setAnimationSpec(container, {
-        angleX: {0: 360, duration: 3},
+        //opacity: {1:0, duration: 0.5},
+        angleZ: {0:-120, duration: 3}
     });
+
+    KITY.setStyle(container, {backgroundColor: 'red'});
+
     KITY.play([txtObjArr, container], {mode: 'sequence'});
+    */
+
+    // sample2-2
+    var line1 = KITY.createText("너를", targetDIV, "line1", "char", {
+        font: "75px bold", "padding-right": "5px", opacity: 0,
+        "background-color": "white", color: "#33cc33"
+    });
+    var line2_1 = KITY.createText("본 내", targetDIV, "line2_1", "char", {
+        font: "23px bold", "padding-right": "5px", opacity: 0, color: "#0059b3"
+    });
+    var line2_2 = KITY.createText("마음속에", targetDIV, "line2_2", "char", {
+        font: "23px bold", opacity: 0, color: "#0059b3"
+    });
+    var line3 = KITY.createText("사랑이", targetDIV, "line3", "char", {
+        font: "50px bold", opacity: 0, color: "red"
+    });
+
+    for (var i in line1) {
+        KITY.setAnimationSpec(line1[i], {
+            opacity: {0: 1, duration: 0.1, delay: 0.1}
+        });
+    }
+
+    var line2 = line2_1.concat(line2_2);
+    for (var i in line2) {
+        KITY.setAnimationSpec(line2[i], {
+            opacity: {0: 1, duration: 0.1, delay: 0.1},
+            y: {[-28]: 0, duration: 0.1, delay: 0.1}
+        });
+    }
+
+    for (var i in line3) {
+        KITY.setAnimationSpec(line3[i], {
+            opacity: {0: 1, duration: 0.2, delay: 0.2},
+            angleZ: {0: 360, duration: 0.2, delay: 0.2}
+        });
+    }
+
+    var line2Cont = KITY.createContainer("line2Cont", targetDIV);
+    line2Cont.add(line2);
+    KITY.setStyle(line2Cont, {top: 23+5, left: -150});
+    
+    var line3Cont = KITY.createContainer("line3Cont", targetDIV);
+    line3Cont.add(line3);
+    KITY.setStyle(line3Cont, {top: 23+55, left: -(150+148)});
+
+    KITY.play([line1, line2, line3], {mode: "sequence"});
+
+
+    /*
+    for (var i in txtObjArr) {
+        KITY.setAnimationSpec(txtObjArr[i], {
+            opacity: {0:1, duration: 0.5, delay: i*0.5},
+        });
+    }
+
+    var container = KITY.createContainer('container', 'parent');
+    container.add(txtObjArr);
+    KITY.setAnimationSpec(container, {
+        scaleY: {1: 0.8, duration: 0.5, delay: 1}
+    }, {
+        scaleY: {0.8: 1, duration: 0.5}
+    });
+    KITY.play([txtObjArr, container]);
+    */
 
 }
 /*
@@ -257,7 +324,7 @@ KITY.play(txtObjArr);
 var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "char");
 for (var i in txtObjArr) {
     KITY.setAnimationSpec(txtObjArr[i], {
-        opacity: {1: 0, duration: 1},
+        opacity: {1: 0, duration: 1}
     });
 }
 KITY.play(txtObjArr, {mode: 'sequence'});
@@ -296,4 +363,71 @@ for (var i in txtObjArr) {
     });
 }
 KITY.play(txtObjArr);
+*/
+
+/* 2-1
+var txtObjArr = KITY.createText("나도 어디서 꿇리진 않아", targetDIV, "kinetic", "word",
+{font: "20px bold", 'padding-right': 5});
+for (var i in txtObjArr) {
+    KITY.setAnimationSpec(txtObjArr[i], {
+        opacity: {0:1, duration: 0.5, delay: i*0.5},
+    });
+}
+
+var container = KITY.createContainer('container', 'parent');
+container.add(txtObjArr);
+KITY.setAnimationSpec(container, {
+    scaleY: {1: 0.8, duration: 0.5, delay: 1}
+}, {
+    scaleY: {0.8: 1, duration: 0.5}
+});
+KITY.play([txtObjArr, container]);
+*/
+
+/*
+    // sample2-2
+    var line1 = KITY.createText("너를", targetDIV, "line1", "char", {
+        font: "75px bold", "padding-right": "5px", opacity: 0,
+        "background-color": "white", color: "#33cc33"
+    });
+    var line2_1 = KITY.createText("본 내", targetDIV, "line2_1", "char", {
+        font: "23px bold", "padding-right": "5px", opacity: 0, color: "#0059b3"
+    });
+    var line2_2 = KITY.createText("마음속에", targetDIV, "line2_2", "char", {
+        font: "23px bold", opacity: 0, color: "#0059b3"
+    });
+    var line3 = KITY.createText("사랑이", targetDIV, "line3", "char", {
+        font: "50px bold", opacity: 0, color: "red"
+    });
+
+    for (var i in line1) {
+        KITY.setAnimationSpec(line1[i], {
+            opacity: {0: 1, duration: 0.1, delay: 0.1}
+        });
+    }
+
+    var line2 = line2_1.concat(line2_2);
+    for (var i in line2) {
+        KITY.setAnimationSpec(line2[i], {
+            opacity: {0: 1, duration: 0.1, delay: 0.1},
+            y: {[-28]: 0, duration: 0.1, delay: 0.1}
+        });
+    }
+
+    for (var i in line3) {
+        KITY.setAnimationSpec(line3[i], {
+            opacity: {0: 1, duration: 0.2, delay: 0.2},
+            angleZ: {0: 360, duration: 0.2, delay: 0.2}
+        });
+    }
+
+    var line2Cont = KITY.createContainer("line2Cont", targetDIV);
+    line2Cont.add(line2);
+    KITY.setStyle(line2Cont, {top: 23+5, left: -150});
+    
+    var line3Cont = KITY.createContainer("line3Cont", targetDIV);
+    line3Cont.add(line3);
+    KITY.setStyle(line3Cont, {top: 23+55, left: -(150+148)});
+
+    KITY.play([line1, line2, line3], {mode: "sequence"});
 */
