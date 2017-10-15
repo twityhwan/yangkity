@@ -19,5 +19,6 @@ function Text(text, id, parentId, type, groupId, index) {
     this.text = text;
     this.style = {};
     this.spec = {el: '#'+id};
+    this.specs = [];
     createElement(parentId, id, text);
 }

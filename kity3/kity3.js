@@ -298,30 +298,36 @@ var setTextLayout = function(textObjs, layout, options) {
  * @param spec {Object} Animation specification
  * @return {Object} Text object
  */
-KITY.setAnimationSpec = function(targetObj, spec) {
+KITY.setAnimationSpec = function(targetObj) {
     // TODO: spec valid check
     if (!isValidObject(targetObj)) {
         return;
     }
 
-    // TODO
-    if ('getSpec' in spec) {
-        spec = spec.getSpec();
+    if (!('specs' in targetObj)) {
+        targetObj.specs = [];
     }
 
-    for (var o in spec) {
-        if (o === 'delay' || o === 'duration') {
-            spec[o] *= 1000;
-        }
-
-        for(var o2 in spec[o]) {
-            if (o2 === 'delay' || o2 === 'duration') {
-                spec[o][o2] *= 1000;
+    console.log(arguments);
+    for (var i=1; i<arguments.length; i++) {
+        var spec = arguments[i];
+        for (var o in spec) {
+            if (o === 'delay' || o === 'duration') {
+                spec[o] *= 1000;
+            }
+    
+            for(var o2 in spec[o]) {
+                if (o2 === 'delay' || o2 === 'duration') {
+                    spec[o][o2] *= 1000;
+                }
             }
         }
+        
+        targetObj.specs.push(spec);
+        //extend(targetObj.spec, spec);
     }
+    console.log(targetObj.specs);
 
-    extend(targetObj.spec, spec);
     return targetObj;
 }
 
@@ -424,13 +430,43 @@ KITY.play = function(targetObj, options) {
 }
 
 function pushAnimation(obj) {
-    if (typeof obj === 'object'&& 'spec' in obj) {
-        animations.push(new mojs.Html(obj.spec));
+    if (typeof obj === "object" && 'specs' in obj) {
+        var spec;
+        for (var i=0; i<obj.specs.length; i++) {
+            if (i==0) {
+                extend(obj.specs[i], {el: '#'+obj.id});
+                spec = new mojs.Html(obj.specs[i]);
+            }
+            else {
+                spec.then(obj.specs[i]);
+            }
+        }
+        animations.push(spec);
     } else if (Array.isArray(obj)) {
         for (var o in obj) {
             pushAnimation(obj[o]);
         }
     }
+
+    
+    /*
+    if (typeof obj === 'object'&& 'spec' in obj) {
+        var spec;
+        for(var i=0; i<obj.specs.length; i++) {
+            if (i==0) {
+                extend(obj.specs[i], {el: '#'+obj.id})
+                console.log(obj.specs[i]);
+                spec = new mojs.Html(obj.specs[i]);
+            }
+            spec.then(obj.specs[i]);
+        }
+        animations.push(spec);
+    } else if (Array.isArray(obj)) {
+        for (var o in obj) {
+            pushAnimation(obj[o]);
+        }
+    }
+    */
 }
 
 })();
