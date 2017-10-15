@@ -216,31 +216,21 @@ var setContainerLayout = function(contObj, layout, options) {
     var children = contObj.getChildren();
     console.log(children);
     
-    for (var c in children) {
-        console.log(children[c]);
+    for (var i=0; i<children.length; i++) {
+        console.log('child: ', children[i]);
         //console.log(children[i]);
-        /*
+        
         switch(layout) {
             case 'leftToRight':
-                if (options.length) {
-                    options.left = left_ + options.length*i;
-                } else {
-                    options.left = left_ + length*options.fontSize;
-                }
+
                 break;
             case 'point':
                 // nothing to do
                 break;
             case 'topToBottom':
-                options.top = top_ + i*options.fontSize;
+                
                 break;
             case 'diagonal':
-                options.top = top_ + i*options.fontSize;
-                if (options.length) {
-                    options.left = left_ + options.length*i;
-                } else {
-                    options.left = left_ + length*options.fontSize;
-                }
                 break;
             case 'userDef':
                 // TODO
@@ -249,12 +239,11 @@ var setContainerLayout = function(contObj, layout, options) {
 
         // CSS 스타일 적용
         if (Object.keys(options).length > 0) {
-            KITY.setStyle(contObjs[i], options);
+            KITY.setStyle(children[i], options);
         }
+    
+        length += chidlren[i].length;
         
-
-        length += contObjs[i].length;
-        */
     }
     return contObj;
 }
@@ -269,33 +258,18 @@ var setContainerLayout = function(contObj, layout, options) {
  * @return {Object} Text object
  */
 var setTextLayout = function(textObjs, layout, options) {
+
     if (!options || typeof options != 'object') {
-        options = {fontSize: 16};
-    } else if (!('fontSize' in options)) {
-        options.fontSize = 16;
+        options = {};
     }
 
-    // layout
-    /*
-    switch(layout) {
-        case 'leftToRight':
-            //options.position = 'static';
-            //break;
-        case 'topToBottom':
-        case 'diagonal':
-        case 'point':
-            //options.position = 'absolute';
-            break;
-        case 'userDef':
-            // TODO
-            break;
-    }
-    */
     options.position = 'relative';
-
+    
     // TODO: topGap, leftGap 설정
     var top_ = options.top ? options.top : 0;
     var left_ = options.left ? options.left : 0;
+    var preEl;
+    var width = 0, height = 0;
     for (var i=0; i<textObjs.length; i++) {
         switch(layout) {
             case 'leftToRight':
@@ -303,18 +277,19 @@ var setTextLayout = function(textObjs, layout, options) {
                 break;
             case 'point':
                 if (i>0) {
-                    options.left = left_ - length*options.fontSize;
+                    options.left = left_ - width;
                 }
                 break;
             case 'topToBottom':
-                options.top = top_ + i*options.fontSize;
                 if (i>0) {
-                    options.left = left_ - length*options.fontSize;
+                    options.top = top_ + height;
+                    options.left = left_ -width;
                 }
                 break;
             case 'diagonal':
-                options.top = top_ + i*options.fontSize;
-
+                if (i>0) {
+                    options.top = top_ + height;
+                }
                 break;
             case 'userDef':
                 // TODO
@@ -326,7 +301,9 @@ var setTextLayout = function(textObjs, layout, options) {
             KITY.setStyle(textObjs[i], options);
         }
 
-        length += textObjs[i].text.length;
+        preEl = document.getElementById(textObjs[i].id);
+        width += preEl.clientWidth;
+        height += preEl.clientHeight;
     }
     return textObjs
 }
