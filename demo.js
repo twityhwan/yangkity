@@ -1,5 +1,6 @@
 var selectEl, textAreaEl, parentEl, descEl;
 var selected;
+var playing;
 window.onload = function() {
     selectEl = document.getElementById("sampleList");
     textAreaEl = document.getElementById("source_area");
@@ -17,30 +18,7 @@ window.onload = function() {
     selected = sampleList[0].title;
 }
 
-var i=0;
 function removeChild(el) {
-    console.log("removeChild", el);
-    /*
-
-    while(el.hasChildNodes()) {
-        console.log("el hasChildNodes");
-        if (i++> 20) {
-            console.log("!!!!!!!!!!!!!", i);
-            break;
-        }
-        if (el.firstChild.hasChildNodes()) {
-            console.log("???", el.firstChild.firstChild);
-            removeChild(el.firstChild.firstChild);
-        } else {
-            console.log("removed", el.firstChild);
-            el.removeChild(el.firstChild);
-        }
-    }
-
-    if(!el.hasChildNodes()) {
-        console.log("no child nodes");
-    }
-    */
     while(el.firstChild) {
         el.removeChild(el.firstChild);
     }
@@ -50,14 +28,23 @@ function removeChild(el) {
 var isPlayed = false;
 function play() {
     // reset parent div
-    removeChild(parentEl);
-    var text = textAreaEl.value;
-    text = text.replace('\n', '');
-    //if (!isPlayed) {
-        console.log("play");
+    //KITY.reset();
+    if (selected == playing) {
+        KITY.replay();
+    } else {
+        KITY.reset();
+        playing = selected;
+        removeChild(parentEl);
+        //if (isPlayed) return;
+        var text = textAreaEl.value;
+        text = text.replace('\n', '');
         eval(text);
-    //}
-    //eval(text);
+        console.log("eval done");
+    }
+
+    if (!isPlayed) {
+        isPlayed = true;
+    }
 }
 
 function onSampleSelected() {
@@ -104,7 +91,7 @@ var sampleList = [{
         '        duration: 4\n'+
         '    });\n'+
         '}\n'+
-        'KITY.play(txtObjArr);',   
+        'KITY.play(txtObjArr);',
     }, {
         title: "sample4",
         description: "단어 단위의 ‘헬로 키네틱’ 텍스트 객체를 4초 동안 180도 회전",
@@ -116,7 +103,7 @@ var sampleList = [{
         '        angleZ: {0: 180, duration: 4}\n'+
         '    });\n'+
         '}\n'+
-        'KITY.play(txtObjArr);', 
+        'KITY.play(txtObjArr);',
     },  {
         title: "sample5",
         description: "글자 단위의 '헬로 키네틱' 텍스트 객체를 각 텍스트가 1초 간격으로 1초 동안 불투명도 100%에서 0%로 변화",
@@ -124,10 +111,11 @@ var sampleList = [{
         'var txtObjArr = KITY.createText("헬로 키네틱", targetDIV, "kinetic", "char");\n'+
         'for (var i in txtObjArr) {\n'+
         '    KITY.setAnimationSpec(txtObjArr[i], {\n'+
-        '        opacity: {1: 0, duration: 1}\n'+
+        '        opacity: {1: 0, duration: 1, delay: i}\n'+
         '    });\n'+
         '}\n'+
-        'KITY.play(txtObjArr, {mode: "sequence"});',
+        'console.log(txtObjArr);\n'+
+        'KITY.play(txtObjArr);',
     }, {
         title: "sample6",
         description: "글자 단위의 '헬로 키네틱' 텍스트 객체를 각 텍스트가 0.5초 간격으로 2초 동안 아래쪽으로 100px 직선 이동",
@@ -188,7 +176,7 @@ var sampleList = [{
         "'본 내 마음속에'는 각 글자가 위에서 아래로 이동하며 나타난다. '사랑이'는 회전하면서 나타난다. 각 글자의 애니메이션 시간과 간격은 1초씩이다.",
         source: 'var targetDIV = "parent";\n'+
         'var line1 = KITY.createText("너를", targetDIV, "line1", "char", {\n'+
-        '    font: "75px bold", "padding-right": "5px", opacity: 0,\n'+
+        '    font: "75px bold", "padding": "3px", opacity: 0,\n'+
         '    "background-color": "white", color: "#33cc33"\n'+
         '});\n'+
         'var line2_1 = KITY.createText("본 내", targetDIV, "line2_1", "char", {\n'+
