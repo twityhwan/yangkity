@@ -18,31 +18,29 @@ window.onload = function() {
     selected = sampleList[0].title;
 }
 
-function removeChild(el) {
-    while(el.firstChild) {
-        el.removeChild(el.firstChild);
+function removeChild(parentEl) {
+    var length = parentEl.children.length;
+    for (var i=0; i<length; i++) {
+        var el = parentEl.children[0];
+        if (el.children.length > 0) {
+            removeChild(el);
+        }
+        KITY.removeById(el.id);
+        parentEl.removeChild(el);
+        
     }
+    isPlayed = false;
 
 }
 
 var isPlayed = false;
 function play() {
     // reset parent div
-    //KITY.reset();
-    if (selected == playing) {
-        KITY.replay();
-    } else {
-        KITY.reset();
-        playing = selected;
-        removeChild(parentEl);
-        //if (isPlayed) return;
-        var text = textAreaEl.value;
-        text = text.replace('\n', '');
-        eval(text);
-        console.log("eval done");
-    }
-
+    removeChild(parentEl);
+    var text = textAreaEl.value;
+    text = text.replace('\n', '');
     if (!isPlayed) {
+        eval(text);
         isPlayed = true;
     }
 }
