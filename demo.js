@@ -29,20 +29,14 @@ function removeChild(parentEl) {
         parentEl.removeChild(el);
         
     }
-    isPlayed = false;
-
 }
 
-var isPlayed = false;
 function play() {
     // reset parent div
     removeChild(parentEl);
     var text = textAreaEl.value;
     text = text.replace('\n', '');
-    if (!isPlayed) {
-        eval(text);
-        isPlayed = true;
-    }
+    eval(text);
 }
 
 function onSampleSelected() {
