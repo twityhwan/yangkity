@@ -204,6 +204,6 @@ var sampleList = [{
         'var line3Cont = KITY.createContainer("line3Cont", targetDIV);\n'+
         'line3Cont.add(line3);\n'+
         'KITY.setStyle(line3Cont, {top: 23+55, left: -(150+148)});\n\n'+
-        'KITY.play([line1, line2, line3], {mode: "sequence"});\n'
+        'KITY.play([line1, line2, line3], "sequence");\n'
     }
 ];

@@ -6,7 +6,7 @@
  */
 
  // TODO: addById(), removeById()
-function Container(id, parentId, width, height) {
+function Container(parentId, id, width, height) {
     this.id = id;
     this.parentId = parentId;
     this.style = {

@@ -72,17 +72,16 @@ var isValidId = function(id) {
  *
  * @method createText
  * @param text {String} Text string
- * @param targetId {String} Parent element id
+ * @param parentId {String} Parent element id
  * @param id {String} Element id for this text
  * @param type {String} Text object type
- * @param style {Object} Style attributes
  * <pre>
  *      type := 'line' | 'word' | 'char'
- *      style.layout := 'leftToRight' | 'topToBottom' | 'diagonal' | 'point' | 'userDef'
  * </pre>
+ * @param style {Object} CSS Style attributes
  * @return {Array} Array of text objects
  */
-KITY.createText = function(text, targetId, id, type, style) {
+KITY.createText = function(text, parentId, id, type, style) {
     var txtObjArr = [];
 
     // content 분리
@@ -92,7 +91,7 @@ KITY.createText = function(text, targetId, id, type, style) {
     // 텍스트 객체 생성
     for (var i=0; i<textArr.length; i++) {
         var elId = id+'_'+type+'_'+i;
-        var textObj = new Text(textArr[i], elId, targetId, type, id, i);
+        var textObj = new Text(textArr[i], elId, parentId, type, id, i);
         objectMap[elId] = textObj;
         if (style) {
             KITY.setStyle(textObj, style);
@@ -130,8 +129,26 @@ var splitText = function(text, splitType) {
     return textArr;
 }
 
+KITY.remove = function(targetObjs) {
+    if (Array.isArray(targetObjs)) {
+        for (var obj in targetObjs) {
+            KITY.remove(targetObjs[obj]);
+        }
+    } else if (typeof targetObjs === "object") {
+        if (objectMap.has(targetObjs.id)) {
+            delete objectMap[elId];
+        }
+    }
+}
+
+KITY.removeById = function(targetId) {
+    if (targetId in objectMap) {
+        delete objectMap[targetId];
+    }
+}
+
 /**
- * Sets style for text object.
+ * Sets style for target object.
  *
  * @method setStyle
  * @param targetObj {Object} Target object
@@ -171,23 +188,23 @@ KITY.setStyleById = function(id, style) {
  * Sets layout for text objects
  *
  * @method setLayout
- * @param targetObj {Array} Array of text objects or Container
+ * @param textObj {Array} Array of text objects
  * @param layout {String} Layout mode
- * @param options {Object} Options for css style
  * <pre>
- *      layout := 'leftToRight' | 'topToBottom' | 'diagonal' | 'point' | 'userDef'
+ *      layout := 'leftToRight' | 'topToBottom' | 'diagonal' | 'point'
  * </pre>
+ * @param options {Object} Options for css style
  * @return {Object} Target object
  */
-KITY.setLayout = function(targetObj, layout, options) {
+KITY.setLayout = function(textObj, layout, options) {
+    /*
     if ('type' in targetObj && targetObj.type == 'container') {
         console.log("container set layout!!");
         setContainerLayout(targetObj, layout, options);
-    } else {
-        setTextLayout(targetObj, layout, options);
-    }
+    }*/
+    setTextLayout(textObj, layout, options);
 
-    return targetObj;
+    return textObj;
 }
 
 /**
@@ -224,6 +241,7 @@ var setContainerLayout = function(contObj, layout, options) {
  * @param layout {String} Layout string
  * @param options {Object} Options
  * @return {Object} Text object
+ * @private
  */
 var setTextLayout = function(textObjs, layout, options) {
 
@@ -308,7 +326,6 @@ KITY.setAnimationSpec = function(targetObj) {
         targetObj.specs = [];
     }
 
-    console.log(arguments);
     for (var i=1; i<arguments.length; i++) {
         var spec = arguments[i];
         for (var o in spec) {
@@ -324,9 +341,7 @@ KITY.setAnimationSpec = function(targetObj) {
         }
         
         targetObj.specs.push(spec);
-        //extend(targetObj.spec, spec);
     }
-    console.log(targetObj.specs);
 
     return targetObj;
 }
@@ -351,7 +366,7 @@ KITY.setAnimationSpecById = function(id, spec) {
 /**
  * Clears all the animation specifications from target object.
  *
- * @method createAnimationSpec
+ * @method clearAnimationSpec
  * @param targetObj {Object} Target object
  * @return {Object} Target object
  */
@@ -369,7 +384,7 @@ KITY.clearAnimationSpec = function(targetObj) {
 /**
  * Clears all the animation specifications from target object by id.
  *
- * @method createAnimationSpecById
+ * @method clearAnimationSpecById
  * @param id {String} Id of target object
  * @return {Object} Target object
  */
@@ -386,10 +401,11 @@ KITY.clearAnimationSpecById = function(id) {
  *
  * @method createContainer
  * @param id {String} Element id
+ * @param parentId {String} Parent element id
  * @return {Object} Container object
  */
-KITY.createContainer = function(id, parentId) {
-    var container = new Container(id, parentId);
+KITY.createContainer = function(parentId, id) {
+    var container = new Container(parentId, id);
     objectMap[id] = container;
     return container;
 }
@@ -399,12 +415,13 @@ KITY.createContainer = function(id, parentId) {
  *
  * @method play
  * @param targetObj {Object|Array} Target object or Array of target objects.
- * @param options {Object} Options. It can be play mode or animation object. If you input animation object, it will be played once.
+ * @param mode {String} Play mode. If mode is 'parallel', animations of target objects are played in parallel.
+ * If mode is 'sequence', each animation of target objects is played in sequence.
  * <pre>
- *      options.mode := 'parallel' | 'sequence'
+ *      mode := 'parallel' | 'sequence'
  * </pre>
  */
-KITY.play = function(targetObj, options) {
+KITY.play = function(targetObj, mode) {
     if (Array.isArray(targetObj)) {
         for (var o in targetObj) {
             pushAnimation(targetObj[o]);
@@ -413,18 +430,18 @@ KITY.play = function(targetObj, options) {
         pushAnimation(targetObj);
     }
 
-    if (!options) options = {};
+    if (!mode) mode = 'parallel';
     timeline = new mojs.Timeline;
-    if (options.mode == 'parallel' || Object.keys(options).length === 0) {
+    if (mode === 'parallel') {
         for (var i=0; i<animations.length; i++) {
             timeline.add(animations[i]);
         }
-    } else if (options.mode == 'sequence') {
+    } else if (mode === 'sequence') {
         for (var i=0; i<animations.length; i++) {
             timeline.append(animations[i]);
         }
     } else {
-        timeline.add(options);
+        // TODO
     }
     timeline.play();
 }
@@ -441,7 +458,8 @@ function pushAnimation(obj) {
                 spec.then(obj.specs[i]);
             }
         }
-        animations.push(spec);
+        if (obj.specs.length>0)
+            animations.push(spec);
     } else if (Array.isArray(obj)) {
         for (var o in obj) {
             pushAnimation(obj[o]);
