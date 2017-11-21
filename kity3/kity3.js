@@ -466,7 +466,6 @@ function pushAnimation(obj) {
         }
     }
 
-    
     /*
     if (typeof obj === 'object'&& 'spec' in obj) {
         var spec;
@@ -485,6 +484,45 @@ function pushAnimation(obj) {
         }
     }
     */
+}
+
+function generateKeyframe(targetObj) {
+    var keyname = targetObj.id;
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    console.log(targetObj.specs);
+    //var keyframe = '@keyframes rotation { from {top: 20px;} to {top: 100px} }';
+    var browserKeyframes = [
+        '@keyframes', /* Standard syntax */
+        '@-webkit-keyframes', /* Chrome, Safari, Opera */
+    ];
+    //var keyframe = '${FRAME} '+keyname+ ' {${ANIMATIONS}}';
+    var keyframe = '@-webkit-keyframes mymove {\n'+
+    '   50%  {font-size: 40px;}\n'+
+    '}';
+    style.innerHTML = keyframe;
+    console.log(style);
+    return style;
+}
+
+var delay = ["1s", "0.5s"];
+var i=0;
+KITY.playKeyframe = function(targetObj) {
+    if (Array.isArray(targetObj)) {
+        for (var o in targetObj) {
+            KITY.playKeyframe(targetObj[o]);
+        }
+    } else {
+        var style = generateKeyframe(targetObj);
+        var el = document.getElementById(targetObj.id);
+        console.log(targetObj.id);
+        console.log(el);
+        el.appendChild(style);
+        el.style.animation = "mymove linear 0.7s "+delay[i]+" 1";
+        console.log(delay[i]);
+        el.style["-webkit-animation"] = "mymove linear 0.7s "+delay[i]+" 1";
+        i++
+    }
 }
 
 })();
